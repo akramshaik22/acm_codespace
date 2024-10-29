@@ -1,0 +1,70 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ contest_title }} Registrations</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="icon" type="image/x-icon" href="{% static 'images/acmcodespace_ele.png' %}">
+</head>
+<body>
+    <nav>
+        <div class="logo">
+            <img src="{% static 'images/ACM_Codespace_logo.png' %}" class="logo" alt="logo">
+        </div>
+        <div class="authorize">
+            <a href="/codespace/admin_logout" class="link" style="margin-right:20px;">Logout</a>
+        </div>
+    </nav>
+        
+    <div class="main-body" style="align-items: flex-start;">
+        <div class="about admin-about">
+            <div class="flex-display user-info">
+                <img src="{% static 'images/profile.jpeg' %}" alt="user profile pic" class="user-profile-pic">
+                <h2>{{ user.get_full_name }}</h2>
+                <span>{{ user.username }}</span>
+            </div>
+            <div class="flex-display other-info">
+                <h2>{{ contest_title }}</h2>
+                <span><a href="/codespace/admin_contests/{{ contest_type }}/{{ contest_code }}/" class="link">About</a></span>
+                <span><a href="/codespace/admin_contests/{{ contest_type }}/{{ contest_code }}/questions/" class="link">Questions</a></span>
+                <span><a href="/codespace/admin_contests/{{ contest_type }}/{{ contest_code }}/registrations/" class="link">Registrations</a></span>
+                <span><a href="/codespace/admin_contests/{{ contest_type }}/{{ contest_code }}/submissions/" class="link">Submissions</a></span>
+                <span><a href="/codespace/admin_contests/{{ contest_type }}/{{ contest_code }}/dashboard/" class="link">Dashboard</a></span>
+            </div>
+        </div>
+        <div class="contest-participated" style="margin-top: 20px; width: calc(100% - 300px);height:100%; overflow-y: scroll;">
+            <div style="display: flex; width: 100%; justify-content: space-between; padding: 10px;">
+                <a class="btn question-btn" onclick="toggleQuestionDiv()" href="/codespace/admin_contests/{{ contest_type }}/{{ contest_code }}/" style="text-decoration:none; color:black;">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512">
+                        <path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.2 288 416 288c17.7 0 32-14.3 32-32s-14.3-32-32-32l-306.7 0L214.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/>
+                    </svg>
+                    &nbsp;Back
+                </a>
+            </div>
+            <div style="width: 100%; height: calc(100% - 60px); overflow: scroll;" class="scrollhide">
+                <h2 style="margin: 10px 30px;">Registrations</h2>
+                <table style="max-width: 100%; overflow-x: scroll;" class="submissiontable">
+                    <tr>
+                        <th>S.No</th>
+                        <th>Username</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                    </tr>
+                    {% for i in registrations %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td><a href="/codespace/profile/{{ i.user_id.username }}" target="_blank">{{ i.user_id.username }}</a></td>
+                            <td>{{ i.user_id.fname }} {{ i.user_id.lname }}</td>
+                            <td>{{ i.user_id.email }}</td>
+                            <td>{{ i.user_id.phoneno }}</td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

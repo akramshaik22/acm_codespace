@@ -1,0 +1,162 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Questions</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="icon" type="image/x-icon" href="{% static 'images/acmcodespace_ele.png' %}">
+</head>
+<body>
+    <nav>
+        <div class="logo">
+            <img src="{% static 'images/ACM_Codespace_logo.png' %}" class="logo" alt="logo">
+        </div>
+        <div class="authorize">
+            <a href="/codespace/admin_logout" class="link" style="margin-right:20px;">Logout</a>
+        </div>
+    </nav>
+    <div class="main-body" style="position: relative;">
+        <div class="about admin-about">
+            <div class="flex-display user-info">
+                <img src="{% static 'images/profile.jpeg' %}" alt="user profile pic" class="user-profile-pic">
+                <h2>{{ user.get_full_name }}</h2>
+                <span>{{ user.username }}</span>
+            </div>
+            <div class="flex-display other-info">
+                <h2>{{ contest_title }}</h2>
+                <span><a href="/codespace/admin_contests/{{ contest_type }}/{{ contest_code }}/" class="link">About</a></span>
+                <span><a href="/codespace/admin_contests/{{ contest_type }}/{{ contest_code }}/questions/" class="link">Questions</a></span>
+                <span><a href="/codespace/admin_contests/{{ contest_type }}/{{ contest_code }}/registrations/" class="link">Registrations</a></span>
+                <span><a href="/codespace/admin_contests/{{ contest_type }}/{{ contest_code }}/submissions/" class="link">Submissions</a></span>
+                <span><a href="/codespace/admin_contests/{{ contest_type }}/{{ contest_code }}/dashboard/" class="link">Dashboard</a></span>
+            </div>
+        </div>
+        <div class="contest" style="justify-content: flex-start; width: max(70%, calc(100% - 300px));">
+            <div style="display: flex; width: 100%; justify-content: space-between; padding: 10px;">
+                <a class="btn question-btn link" href="/codespace/admin_contests/{{ contest_type }}/{{ contest_code }}/questions/" onclick="toggleQuestionDiv()">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512">
+                        <path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.2 288 416 288c17.7 0 32-14.3 32-32s-14.3-32-32-32l-306.7 0L214.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/>
+                    </svg>
+                    &nbsp;Back
+                </a>
+            </div>
+            <div class="publish-head">
+                <h2><b>Add Question</b></h2>
+                <hr width="100%">
+            </div>
+            <form action="" method="post" class="question-list-items scrollhide" style="flex-direction: row;">
+                {% csrf_token %}
+                <div class="text-details">
+                    <div class="flex-display scrollhide" style="overflow-y: scroll; overflow-x: hidden; width: calc(100% - 20px); height: calc(100% - 20px); flex-direction: column;">
+                        
+                        <div class="input-group description-input">
+                            <textarea placeholder="" required="" type="text" name="que_desc" autocomplete="off" class="input  scrollhide"></textarea>
+                            <label class="user-label">Description</label>
+                        </div>
+                        
+                        <div class="input-group">
+                            <input placeholder="" required="" type="number" name="score" autocomplete="off" class="input" min="0">
+                            <label class="user-label">Score</label>
+                        </div>
+                        
+                        <div class="input-group">
+                            <input placeholder="" required="" type="number" name="duration" autocomplete="off" class="input" min="0">
+                            <label class="user-label">Duration</label>
+                        </div>
+                        
+                        <div class="testcases">
+                            <div class="flex-display" style="justify-content: space-between; width: 100%; padding: 0 5px;">
+                                <span>Options</span>
+                                <button class="btn question-btn" style="font-size: 0.8rem; color: #969696;" onclick="addTeastcase()">+ add option</button>
+                            </div>
+                            <ol class="mcq-options" id="mcqoptions" style="list-style: none;">
+                                <li>
+                                    <div class="mcq-option">
+                                        <input type="radio" name="correct_op" value="1">
+                                        <div class="circle" onclick='this.parentElement.children[0].checked=true'>
+                                            <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512">
+                                                <path d="M512 256A256 256 0 1 0 0 256a256 256 0 1 0 512 0zM271 135c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9l-87 87 87 87c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0L167 273c-9.4-9.4-9.4-24.6 0-33.9L271 135z"/>
+                                            </svg>
+                                        </div>
+                                        <textarea placeholder="Option Answer" autocomplete="off" class="input  scrollhide" required></textarea>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="mcq-option">
+                                        <input type="radio" name="correct_op" value="2">
+                                        <div class="circle" onclick='this.parentElement.children[0].checked=true'>
+                                            <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512">
+                                                <path d="M512 256A256 256 0 1 0 0 256a256 256 0 1 0 512 0zM271 135c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9l-87 87 87 87c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0L167 273c-9.4-9.4-9.4-24.6 0-33.9L271 135z"/>
+                                            </svg>
+                                        </div>
+                                        <textarea placeholder="Option Answer" autocomplete="off" class="input  scrollhide" required></textarea>
+                                    </div>
+                                </li>
+                            </ol>
+                        </div>
+                        <input type="hidden" value="" name="options" id="options">
+                    </div>
+                </div>
+                <div class="image-details">
+                    <div class="upload">
+                        <div class="preview-img-div" onclick="document.getElementById('files').click()">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512" class="upload-add">
+                                <path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32V224H48c-17.7 0-32 14.3-32 32s14.3 32 32 32H192V432c0 17.7 14.3 32 32 32s32-14.3 32-32V288H400c17.7 0 32-14.3 32-32s-14.3-32-32-32H256V80z"/>
+                            </svg>
+                            <span>Upload</span>
+                            <img id="image" class="preview-img"/>
+                        </div>
+                        <input placeholder="" accept="image/*" type="file" id="files" value="upload" name="que_img"/>
+                    </div>
+                    <button class="btn" onclick="serializeTestcase()">
+                        Submit
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+<script>
+    let option_count = 2;
+
+    document.getElementById('files').onchange = function () {
+        var src = URL.createObjectURL(this.files[0]);
+        console.log(this.files[0].name);
+        document.getElementById('image').src = src;
+    }
+
+    function addOption(){
+        testcase_count += 1;
+        let testcases = document.getElementById('mcqoptions');
+        let testcase = document.createElement('li');
+        testcase.innerHTML = `<div class="mcq-option" style="justify-content: space-between; align-items: center;">
+                                <input type="radio" name="correct_op" value="` + option_count + `">
+                                <div class="flex-display">
+                                    <div class="circle" onclick='this.parentElement.parentElement.children[0].checked=true'>
+                                        <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512">
+                                            <path d="M512 256A256 256 0 1 0 0 256a256 256 0 1 0 512 0zM271 135c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9l-87 87 87 87c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0L167 273c-9.4-9.4-9.4-24.6 0-33.9L271 135z"/>
+                                        </svg>
+                                    </div>
+                                    <textarea placeholder="Option Answer" autocomplete="off" class="input  scrollhide" required></textarea>
+                                </div>
+                                <button class="btn question-btn color-red" style="font-size: 0.8rem; width: 40px;" onclick="this.parentElement.parentElement.remove()">x</button>
+                            </div>`;
+        testcases.appendChild(testcase);
+    }
+
+    function serializeOption(){
+        let options_serial = "";
+        let testcases = document.getElementsByClassName('mcq-option');
+        for(let i=0; i<testcases.length; i++){
+            let option = testcases[i].getElementsByTagName('textarea')[0].value;
+            options_serial += option + "\n@dlim@\n";
+        }
+        
+        alert(options_serial);
+        document.getElementsById('options').value = options_serial;
+    }
+    // setInterval(() => window.location.reload(), 3000);
+</script>
+</html>

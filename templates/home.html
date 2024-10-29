@@ -1,0 +1,133 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Codespace</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="icon" type="image/x-icon" href="{% static 'images/acmcodespace_ele.png' %}">
+    <style>
+        svg{
+            stroke: black;
+        }
+        
+        a:hover svg{
+            stroke: #0F649D;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="logo">
+            <img src="{% static 'images/ACM_Codespace_logo.png' %}" class="logo" alt="logo">
+            <div class="mobile-nav-container">
+                <span class="vertical-line"></span>
+                <div class="nav-but close-nav" id="nav-but">
+                    <span style="--i: 0" class="nav-more"></span>
+                    <span style="--i: 1" class="nav-more"></span>
+                    <span style="--i: 2" class="nav-more"></span>
+                </div>
+            </div>
+        </div>
+        <ul class="nav-links">
+            <li><a class="active-link">Home</a></li>
+            <li><a href="/codespace/practice">Practice</a></li>
+            <li><a href="/codespace/contests">Contests</a></li>
+        </ul>
+        <ul class="mobile-nav-links nav-links close-mobile-nav" id="mobile-nav-options">
+            <li><a class="active-link">Home</a></li>
+            <li><a href="/codespace/practice">Practice</a></li>
+            <li><a href="/codespace/contests">Contests</a></li>
+        </ul>
+        {% if username %}
+            <div class="authorize">
+                {{ username }}
+                {% if profileUrl %}
+                <img src=".{{ profileUrl }}" class="profile-img" alt="profile-img">
+                {% else %}
+                <img src="{% static 'images/profile.jpeg' %}" class="profile-img" alt="profile">
+                {% endif %}
+                <ul>
+                    <li><a href="/codespace/profile/{{ username }}">Profile</a></li>
+                    <li><a href="/codespace/user_logout">Logout</a></li>
+                </ul>
+            </div>
+        {% else %}
+            <div class="authorize">
+                <a href="/codespace/user_login">Login</a>
+                <a href="/codespace/user_registration">Register</a>
+            </div>
+        {% endif %}
+    </nav>
+    <div class="main-body" style="height: calc(100vh - 100px);">
+        <div class="contest">
+            <div class="contest-pages upcoming-contest">
+                <h3>Upcoming contests</h3>
+                <div class="card-container scrollhide">
+                    {% for i in upcoming %}
+                        <div class="card">
+                            <img class="poster-img" src=".{{ i.poster.url }}" alt="poster image">
+                            <div class="contest-details">
+                                <h4>{{ i.title }}</h4>
+                                <p><b>Date:</b>{{ i.start_date|date:"Y-m-d" }}</p>
+                                <p><b>Time:</b>{{ i.start_date|date:"H:i" }}</p>
+                                <p><b>Venue:</b>{{ i.venue }}</p>
+                                <a class="btn link" href="/codespace/contests/{{ i.contest_code }}" style="height: 30px; background-color: #26B2AD; font-size: 0.8rem; font-weight: bold; width: 80%;" disable>Register</a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                    {% if not upcoming %}
+                        <h4 style="width: 100%;" align="center">Explore practice session and prepare for next contest</h4>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="contest-pages past-contest">
+                <div style="display: flex; align-items: center; justify-content: space-between; padding-right: 10px;">
+                    <h3>Past contests</h3>
+                    <a class="link" href="/codespace/contests">more...</a>
+                </div>
+                <div class="card-container scrollhide">
+                    {% for i in past %}
+                        <div class="card">
+                            <img class="poster-img" src=".{{ i.poster.url }}" alt="poster image">
+                            <div class="contest-details">
+                                <h4>{{ i.title }}</h4>
+                                <p><b>Date:</b>{{ i.start_date|date:"Y-m-d" }}</p>
+                                <p><b>Time:</b>{{ i.start_date|date:"H:i" }}</p>
+                                <p><b>Venue:</b>{{ i.venue }}</p>
+                                <div class="participant-count">
+                                    <span class="count">{{ i.total_participants }}</span>
+                                    <p>partipants</p>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <div class="about">
+            <img class="landing-img" src="{% static 'images/ACM_Logo_new.png' %}" alt="acm_logo">
+            <h2><a target="_blank" href="https://gmritchapter.acm.org" style="display: flex; justify-content: center; align-items: center;" class="link">
+                ACM GMRIT
+                <svg style="fill: none; width: 30px; height: 30px;" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path id="Vector" d="M10.0002 5H8.2002C7.08009 5 6.51962 5 6.0918 5.21799C5.71547 5.40973 5.40973 5.71547 5.21799 6.0918C5 6.51962 5 7.08009 5 8.2002V15.8002C5 16.9203 5 17.4801 5.21799 17.9079C5.40973 18.2842 5.71547 18.5905 6.0918 18.7822C6.5192 19 7.07899 19 8.19691 19H15.8031C16.921 19 17.48 19 17.9074 18.7822C18.2837 18.5905 18.5905 18.2839 18.7822 17.9076C19 17.4802 19 16.921 19 15.8031V14M20 9V4M20 4H15M20 4L13 11" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+            </a></h2>
+            <p>Ours is a Student Driven Chapter where we are gonna conduct a lot of events both technically and non-technically..<br>
+Coming to Technical, each individual being an engineering student has to possess some skills right.. we are here to improve or enhance them by regular practice in the name of conducting some events. By participating in them, a student can recall all that he learnt.
+            </p>
+        </div>
+    </div>
+    <footer>
+        <p>&copy; copy rights reserved for <a href="https://gmritchapter.acm.org" class="link" target="_blank"><strong>ACM GMRIT</strong></a></p>
+        <p>Developed by <a href="https://bhargavratnala.github.io" class="link" target="_blank"><strong>Bhargav Ratnala</strong></a> & <a href="https://akramshaik22.github.io" class="link" target="_blank"><strong>Akram Shaik</strong></a> (2021-25)</p>
+    </footer>
+</body>
+<script>
+    const navBut = document.getElementById('nav-but');
+    const mobileNavOptions = document.getElementById('mobile-nav-options');
+    navBut.addEventListener('click', () => {
+        navBut.classList.toggle('close-nav');
+        mobileNavOptions.classList.toggle('close-mobile-nav');
+    });
+</script>
+</html>

@@ -1,0 +1,59 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contest Password</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="icon" type="image/x-icon" href="{% static 'images/acmcodespace_ele.png' %}">
+</head>
+<body>
+    <nav>
+        <div class="logo">
+            <img src="{% static 'images/ACM_Codespace_logo.png' %}" class="logo" alt="logo">
+        </div>
+        <ul class="nav-links">
+            <li><a>Home</a></li>
+            <li><a href="/codespace/practice">Practice</a></li>
+            <li><a href="/codespace/contests">Contest</a></li>
+        </ul>
+        {% if username %}
+            <div class="authorize">
+                {{ username }}
+                {% if profileUrl %}
+                <img src="../../{{ profileUrl }}" class="profile-img" alt="profile-img">
+                {% else %}
+                <img src="{% static 'images/profile.jpeg' %}" class="profile-img" alt="profile">
+                {% endif %}
+                <ul>
+                    <li><a href="/codespace/profile/{{ username }}">Profile</a></li>
+                    <li><a href="/codespace/user_logout">Logout</a></li>
+                </ul>
+            </div>
+        {% else %}
+            <div class="authorize">
+                <a href="/codespace/user_login">Login</a>
+                <a href="/codespace/user_registration">Register</a>
+            </div>
+        {% endif %}
+    </nav>
+    <div class="main-body" style="align-items: center;">
+        <form action="" method="post" class="question-list-items scrollhide" style="flex-direction: row; height: calc(100% - 20px); align-items: center;">
+            {% csrf_token %}
+            <div class="flex-display scrollhide" style="width: calc(100% - 20px); height: fit-content; flex-direction: column;">
+                <h3 class="page-head">Contest Password</h3>
+                <div class="input-group">
+                    <input placeholder="" type="text" name="contest_pwd" autocomplete="off" class="input" min="0">
+                    <label class="user-label">Enter Contest Password</label>
+                </div>
+                <p style="color:red;margin:10px 0;">{{ alert }}</p>
+                <button class="btn">
+                    Submit
+                </button>
+            <p style="color:#FF914D; margin:20px 0;">** It is a Secured Test. Please Enter the Password Provided by the Host. **</p>
+            </div>
+        </from>
+    </div>
+</body>
+</html>

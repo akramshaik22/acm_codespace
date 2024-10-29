@@ -1,0 +1,106 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Codewars</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="icon" type="image/x-icon" href="{% static 'images/acmcodespace_ele.png' %}">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+</head>
+<body>
+    <nav>
+        <div class="flex-display">
+            <div class="logo">
+                <img src="{% static 'images/ACM_Codespace_logo.png' %}" class="logo" alt="logo">
+            </div>
+            <span class="vertical-line"></span>
+            <button class="question-btn flex-display">
+                &nbsp;&nbsp;Code Duel
+            </button>
+        </div>
+        <div class="flex-display">
+            {% if username %}
+                <div class="authorize">
+                    <span class="username">{{username}}</span>
+                    {% if profileUrl %}
+                    <img src="/codespace{{ profileUrl }}" class="profile-img" alt="profile-img">
+                    {% else %}
+                    <img src="{% static 'images/profile.jpeg' %}" class="profile-img" alt="profile">
+                    {% endif %}
+                    <ul>
+                        <li><a href="#">Profile</a></li>
+                        <li><a href="user_logout">Logout</a></li>
+                    </ul>
+                </div>
+            {% else %}
+                <div class="authorize">
+                    <a href="user_login">Login</a>
+                    <a href="user_registration">Register</a>
+                </div>
+            {% endif %}
+        </div>
+    </nav>
+    <div class="main-body" style="flex-direction: column; justify-content: center;">
+        <h1 style="text-align: center; margin-bottom: 20px;">Code Duel</h1>
+        <h2 style="text-align: center; margin-bottom: 20px;">Level {{ level }}</h2>
+        <h3 style="text-align: center; margin-bottom: 20px;">Waiting for opponent...</h3>
+        <div class="card" style="max-height: 300px;">
+            <div class="user-details">
+                {% if profileUrl %}
+                <img src="/codespace{{ profileUrl }}" class="profile-img" alt="profile-img">
+                {% else %}
+                <img src="{% static 'images/profile.jpeg' %}" class="profile-img" alt="profile">
+                {% endif %}
+                <span class="username">{{username}}</span>
+            </div>
+            <img src="{% static 'images/codewars-vs.png' %}" class="vs-img" alt="VS">
+            <div class="user-details">
+                <img src="{% static 'images/codewars-profile0.png' %}" class="profile-img opponent-profile" alt="profile-img">
+                <img src="{% static 'images/codewars-profile1.png' %}" class="profile-img opponent-profile" alt="profile-img">
+                <img src="{% static 'images/codewars-profile2.png' %}" class="profile-img opponent-profile" alt="profile-img">
+                <img src="{% static 'images/codewars-profile3.png' %}" class="profile-img opponent-profile" alt="profile-img">
+                <img src="{% static 'images/codewars-profile4.png' %}" class="profile-img opponent-profile" alt="profile-img">
+                <span class="username" id="opponent-name">...</span>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    let imgIndex = 0;
+    let opponentProfile = document.getElementsByClassName("opponent-profile");
+    let opponentName = document.getElementById("opponent-name");
+    let names = [".", "..", "...", "....", "....."];
+    let profileIntervel = setInterval(() => {
+        imgIndex = (imgIndex + 1) % 5;
+        opponentName.innerHTML = names[imgIndex];
+        for(let i = 0; i < 5; i++) {
+            opponentProfile[i].style.display = "none";
+        }
+        opponentProfile[imgIndex].style.display = "block";
+    }, 200);
+    
+    function set_opponent()
+    {
+        $.ajax({
+            type: "POST",
+            url: '/codespace/{{ contest_code }}/code_wars/set_opponent/',
+            data: "csrfmiddlewaretoken=" + '{{ csrf_token }}',
+            success: function(request){
+                if(request['status']==1)
+                {
+                    window.location.href = "/codespace/{{ contest_code }}/code_wars/code_duel/";
+                }
+                
+            },
+            error: function(request){
+                alert('Internal Server Error');
+            }
+        });
+    }
+    
+    
+    setInterval(set_opponent, 5000);
+</script>
+</html>

@@ -1,0 +1,126 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="icon" type="image/x-icon" href="{% static 'images/acmcodespace_ele.png' %}">
+</head>
+<body>
+    <nav>
+        <div class="logo">
+            <img src="{% static 'images/ACM_Codespace_logo.png' %}" class="logo" alt="logo">
+            <div class="mobile-nav-container">
+                <span class="vertical-line"></span>
+                <div class="nav-but close-nav" id="nav-but">
+                    <span style="--i: 0" class="nav-more"></span>
+                    <span style="--i: 1" class="nav-more"></span>
+                    <span style="--i: 2" class="nav-more"></span>
+                </div>
+            </div>
+        </div>
+        <ul class="nav-links">
+            <li><a href="/codespace">Home</a></li>
+            <li><a href="/codespace/practice">Practice</a></li>
+            <li><a href="/codespace/contests">Contests</a></li>
+        </ul>
+        <ul class="mobile-nav-links nav-links close-mobile-nav" id="mobile-nav-options">
+            <li><a href="/codespace">Home</a></li>
+            <li><a href="/codespace/practice">Practice</a></li>
+            <li><a href="/codespace/contests">Contests</a></li>
+        </ul>
+        {% if login_username %}
+            <div class="authorize active-link">
+                {{ login_username }}
+                {% if login_profileUrl %}
+                <img src="/codespace{{ login_profileUrl }}" class="profile-img" alt="profile-img">
+                {% else %}
+                <img src="{% static 'images/profile.jpeg' %}" class="profile-img" alt="profile">
+                {% endif %}
+                <ul>
+                    <li><a href="/codespace/user_logout">Logout</a></li>
+                </ul>
+            </div>
+        {% else %}
+            <div class="authorize">
+                <a href="/codespace/user_login">Login</a>
+                <a href="/codespace/user_registration">Register</a>
+            </div>
+        {% endif %}
+    </nav>
+    <div class="main-body" style="height: calc(100vh - 100px);">
+        <div class="contest" style="justify-content: flex-start;">
+            <div class="flex-display problem-details">
+                <div class="totalProvlems">
+                    <h2>Sloved Problems</h2>
+                    <span class="count">{{ solved_que_count }}</span>
+                </div>
+                <div class="flex-display indetail-problems">
+                    <span><b>Easy : </b>{{ e_count }}</span>
+                    <span><b>Medium : </b>{{ m_count }}</span>
+                    <span><b>Hard : </b>{{ h_count }}</span>
+                </div>
+            </div>
+            <!--<div class="contest-participated">-->
+            <!--    <h2>Contest Participated</h2>-->
+            <!--    <div class="contest-list">-->
+            <!--        Not Participated-->
+            <!--    </div>-->
+            <!--</div>-->
+            <div class="contest-participated scrollhide" style="overflow-x: hidden; overflow-y: scroll;">
+                <h2>Sloved Problems</h2>
+                <table class="submissiontable">
+                    <tr>
+                        <th>Title</th>
+                        <th>Difficulty</th>
+                        <th>Status</th>
+                    </tr>
+                    {% for i in sub_que %}
+                    <tr>
+                        <td>{{ i.que_title }}</td>
+                        <td>{{ i.level }}</td>
+                        <td>{{ i.status }}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+        <div class="about" style="overflow-x: hidden; overflow-y: scroll; justify-content: flex-start;">
+            <div class="flex-display user-info">
+                {% if profileUrl %}
+                <img src="/codespace{{ profileUrl }}" class="user-profile-pic" alt="profile-img">
+                {% else %}
+                <img src="{% static 'images/profile.jpeg' %}" class="user-profile-pic" alt="profile">
+                {% endif %}
+                <h2>{{ name }}</h2>
+                <span>{{ username }}</span>
+            </div>
+            <div class="flex-display other-info">
+                {% if email %}
+                <h2>Contact Info</h2>
+                <span><b>Mail : </b>{{ email }}</span>
+                <span><b>Mobile : </b>{{ phno }}</span>
+                {% endif %}
+                <h2>Basic Details</h2>
+                <span><b>Gender : </b>{{ gender }}</span>
+                <span><b>College : </b>{{ college }}</span>
+                <span><b>Stream : </b>{{ stream }}</span>
+            </div>
+        </div>
+    </div>
+    <footer>
+        <p>&copy; copy rights reserved for <a href="https://gmritchapter.acm.org" class="link" target="_blank"><strong>ACM GMRIT</strong></a></p>
+        <p>Developed by <a href="https://bhargavratnala.github.io" class="link" target="_blank"><strong>Bhargav Ratnala</strong></a> & <a href="https://akramshaik22.github.io" class="link" target="_blank"><strong>Akram Shaik</strong></a> (2021-25)</p>
+    </footer>
+</body>
+<script>
+    const navBut = document.getElementById('nav-but');
+    const mobileNavOptions = document.getElementById('mobile-nav-options');
+    navBut.addEventListener('click', () => {
+        navBut.classList.toggle('close-nav');
+        mobileNavOptions.classList.toggle('close-mobile-nav');
+    });
+</script>
+</html>

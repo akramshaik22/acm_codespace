@@ -1,0 +1,308 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register User</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="icon" type="image/x-icon" href="{% static 'images/acmcodespace_ele.png' %}">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+</head>
+<body>
+    <nav>
+        <div class="logo">
+            <img src="{% static 'images/ACM_Codespace_logo.png' %}" class="logo" alt="logo">
+            <div class="mobile-nav-container">
+                <span class="vertical-line"></span>
+                <div class="nav-but close-nav" id="nav-but">
+                    <span style="--i: 0" class="nav-more"></span>
+                    <span style="--i: 1" class="nav-more"></span>
+                    <span style="--i: 2" class="nav-more"></span>
+                </div>
+            </div>
+        </div>
+        <ul class="nav-links">
+            <li><a href="/codespace">Home</a></li>
+            <li><a href="/codespace/practice">Practice</a></li>
+            <li><a href="/codespace/contests">Contests</a></li>
+        </ul>
+        <ul class="mobile-nav-links nav-links close-mobile-nav" id="mobile-nav-options">
+            <li><a href="/codespace">Home</a></li>
+            <li><a href="/codespace/practice">Practice</a></li>
+            <li><a href="/codespace/contests">Contests</a></li>
+        </ul>
+        <div class="authorize">
+            <a href="/codespace/user_login">Login</a>
+        </div>
+    </nav>
+    <h3 class="page-head">Register Here</h3>
+    <div class="main-body" style="align-items: flex-start; height: calc(100vh - 120px);">
+        <form action="user_registration" method="post" onsubmit="return userbool && emailbool && phonebool && passwordbool && rpasswordbool" enctype="multipart/form-data" id="user_reg_form" class="question-list-items scrollhide" style="flex-direction: row; height: calc(100% - 20px);">
+            {% csrf_token %}
+            <div class="text-details" style="height: fit-content;">
+                <div class="flex-display scrollhide" style="width: calc(100% - 20px); height: fit-content; flex-direction: column;">
+                    <div class="input-group">
+                        <input placeholder="" onblur="checkUsername()" type="text" name="username" autocomplete="off" class="input" id="username">
+                        <label class="user-label">username</label>
+                        <div class="loader" id="user-loader">
+                            <div class="circle"></div>
+                            <div class="circle"></div>
+                            <div class="circle"></div>
+                            <div class="circle"></div>
+                        </div>
+                        <p class="msg" id="usernameMsg">Username already exists</p>
+                    </div>
+                    <div class="testcase">
+                        <div class="input-group">
+                            <input placeholder="" type="text" name="fname" autocomplete="off" class="input">
+                            <label class="user-label">First Name</label>
+                        </div>
+                        <div class="input-group">
+                            <input placeholder="" type="text" name="lname" autocomplete="off" class="input">
+                            <label class="user-label">Last Name</label>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <div class="radio-input" style="--count: 2;">
+                            <label>
+                            <input value="Male" name="gender" id="value-1" type="radio" checked="">
+                            <span>Male</span>
+                            </label>
+                            <label>
+                              <input value="Female" name="gender" id="value-2" type="radio">
+                            <span>Female</span>
+                            </label>
+                            <span class="selection"></span>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <input placeholder="" onblur="checkEmail()" type="email" name="email" autocomplete="off" class="input" min="0" id="email">
+                        <label class="user-label">Email</label>
+                        <div class="loader" id="email-loader">
+                            <div class="circle"></div>
+                            <div class="circle"></div>
+                            <div class="circle"></div>
+                            <div class="circle"></div>
+                        </div>
+                        <p class="msg" id="emailMsg">Email already exists</p>
+                    </div>
+                    <div class="input-group">
+                        <input placeholder="" onblur="checkPhone()" type="number" name="contact" autocomplete="off" class="input" min="0" id="phone">
+                        <label class="user-label">Phone No</label>
+                        <div class="loader" id="phone-loader">
+                            <div class="circle"></div>
+                            <div class="circle"></div>
+                            <div class="circle"></div>
+                            <div class="circle"></div>
+                        </div>
+                        <p class="msg" id="phoneMsg">Mobile Number exists</p>
+                    </div>
+                    <div class="input-group">
+                        <input placeholder="" onblur="checkPassword()" type="password" name="password" autocomplete="off" class="input" min="0" id="password">
+                        <label class="user-label">Password</label>
+                        <p class="msg" id="passwordMsg">Password must contain atleast 8 characters, 1 number, 1 special character(. @_)</p>
+                    </div>
+                    <div class="input-group">
+                        <input placeholder="" onblur="checkRepassword()" type="password" name="rpassword" autocomplete="off" class="input" min="0" id="rpassword">
+                        <label class="user-label">Re-Password</label>
+                        <p class="msg" id="rpasswordMsg">Password must match</p>
+                    </div>
+                    <div class="input-group">
+                        <input placeholder=" " type="text" name="stream" autocomplete="off" class="input" min="0">
+                        <label class="user-label">Stream</label>
+                    </div>
+                    <div class="input-group">
+                        <input placeholder="" type="text" name="college" autocomplete="off" class="input" min="0">
+                        <label class="user-label">College</label>
+                    </div>
+                </div>
+            </div>
+            <div class="image-details">
+                <div class="upload">
+                    <div class="preview-img-div" onclick="document.getElementById('files').click()" style="border-radius: 50%; width: 250px; height: 250px;">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512" class="upload-add">
+                            <path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32V224H48c-17.7 0-32 14.3-32 32s14.3 32 32 32H192V432c0 17.7 14.3 32 32 32s32-14.3 32-32V288H400c17.7 0 32-14.3 32-32s-14.3-32-32-32H256V80z"/>
+                        </svg>
+                        <span>Upload Photo</span>
+                        <img id="image" class="preview-img" style="object-fit: cover; height: 100%; top: 0;"/>
+                    </div>
+                    <input accept="image/*" type="file" id="files" value="" name="profile_pic"/>
+                </div>
+                <button class="btn">
+                    Submit
+                </button>
+            </div>
+        </form>
+    </div>
+    <footer>
+        <p>&copy; copy rights reserved for <a href="https://gmritchapter.acm.org" class="link" target="_blank"><strong>ACM GMRIT</strong></a></p>
+        <p>Developed by <a href="https://bhargavratnala.github.io" class="link" target="_blank"><strong>Bhargav Ratnala</strong></a> & <a href="https://akramshaik22.github.io" class="link" target="_blank"><strong>Akram Shaik</strong></a> (2021-25)</p>
+    </footer>
+</body>
+<script>
+    document.getElementById('files').onchange = function () {
+        var src = URL.createObjectURL(this.files[0]);
+        document.getElementById('image').src = src;
+    }
+    
+    let userbool = false, emailbool = false, phonebool = false, passwordbool = false, rpasswordbool = false;
+    
+    let userloader = document.getElementById('user-loader');
+    let username = document.getElementById('username');
+    let emailloader = document.getElementById('email-loader');
+    let email = document.getElementById('email');
+    let phoneloader = document.getElementById('phone-loader');
+    let phone = document.getElementById('phone');
+
+    function checkUsername(){
+        userloader.style.display = 'block';
+        let usernameMsg = document.getElementById("usernameMsg");
+        usernameMsg.style.display = 'none';
+        let usernameValue = username.value;
+        let usernamereg = /^[a-zA-Z0-9_]+$/;
+        if(usernameValue.length < 4 || usernamereg.test(usernameValue) == false){
+            userloader.style.display = 'none';
+            usernameMsg.style.display = 'block';
+            usernameMsg.innerHTML = "username should contain only a-z, A-Z, 0-9, _";
+            username.style.borderColor = '#ff0000';
+            userbool = false;
+            return;
+        }
+        $.ajax({url: "/codespace/validate",
+                data: `username=${usernameValue}&csrfmiddlewaretoken={{ csrf_token }}`,
+                type: 'POST',
+                success: (result) => {
+                    if(result.status == 1){
+                        username.style.borderColor = "#00af00";
+                        userbool = true;
+                    }
+                    else{
+                        usernameMsg.style.display = "block";
+                        username.style.borderColor = '#ff0000';
+                        userbool = false;
+                    }
+                    userloader.style.display = 'none';
+                },
+                error: () => {
+                    userloader.style.display = 'none';
+                    userbool = false;
+                }
+            });
+    }
+
+    function checkEmail(){
+        emailloader.style.display = 'block';
+        let emailMsg = document.getElementById("emailMsg");
+        emailMsg.style.display = 'none';
+        let emailValue = email.value;
+        let emailreg = /^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$/;
+        if(emailValue.length < 10 || emailreg.test(emailValue) == false){
+            console.log(emailValue);
+            emailloader.style.display = 'none';
+            emailMsg.style.display = 'block';
+            email.style.borderColor = '#ff0000';
+            emailMsg.innerHTML = "Invalid Email id";
+            emailbool = false;
+            return;
+        }
+        $.ajax({url: "/codespace/validate",
+                data: `email=${emailValue}&csrfmiddlewaretoken={{ csrf_token }}`,
+                type: 'POST',
+                success: (result) => {
+                    if(result.status == 1){
+                        email.style.borderColor = "#00af00";
+                        emailbool = true;
+                    }
+                    else{
+                        emailMsg.style.display = "block";
+                        email.style.borderColor = '#ff0000';
+                        emailbool = false;
+                    }
+                    emailloader.style.display = 'none';
+                },
+                error: () => {
+                    emailloader.style.display = 'none';
+                    emailbool = false;
+                }
+            });
+    }
+
+    function checkPhone(){
+        phoneloader.style.display = 'block';
+        let phoneMsg = document.getElementById("phoneMsg");
+        phoneMsg.style.display = 'none';
+        let phoneValue = phone.value;
+        let phonereg = /^[0-9]+$/;
+        if(phoneValue.length < 10 || phonereg.test(phoneValue) == false){
+            phoneloader.style.display = 'none';
+            phoneMsg.style.display = 'block';
+            phoneMsg.innerHTML = "Invalid Mobile Number";
+            phone.style.borderColor = '#ff0000';
+            phonebool = false;
+            return;
+        }
+        $.ajax({url: "/codespace/validate",
+                data: `phone=${phoneValue}&csrfmiddlewaretoken={{ csrf_token }}`,
+                type: 'POST',
+                success: (result) => {
+                    if(result.status == 1){
+                        phone.style.borderColor = "#00af00";
+                        phonebool = true;
+                    }
+                    else{
+                        phoneMsg.style.display = "block";
+                        phonebool = false;
+                        phone.style.borderColor = '#ff0000';
+                    }
+                    phoneloader.style.display = 'none';
+                },
+                error: () => {
+                    phoneloader.style.display = 'none';
+                    phonebool = false;
+                }
+            });
+    }
+    
+    function checkPassword(){
+        let password = document.getElementById('password');
+        let passwordMsg = document.getElementById('passwordMsg');
+        passwordMsg.style.display = 'none';
+        let passwordreg = /^.*(?=.{8,})(?=.*[a-zA-Z])(?=.*\d)(?=.*[.@ _]).*$/;
+        if(passwordreg.test(password.value) == false){
+            password.style.borderColor = '#ff0000';
+            passwordMsg.style.display = 'block';
+            passwordbool = false;
+        }
+        else{
+            password.style.borderColor = '#00af00';
+            passwordbool = true;
+        }
+    }
+
+    function checkRepassword(){
+        let password = document.getElementById('password');
+        let rpassword = document.getElementById('rpassword');
+        let rpasswordMsg = document.getElementById('rpasswordMsg');
+        rpasswordMsg.style.display = 'none';
+        if(password.value != rpassword.value){
+            rpassword.style.borderColor = '#ff0000';
+            rpasswordMsg.style.display = 'block';
+            rpasswordbool = false;
+        }
+        else{
+            rpassword.style.borderColor = '#00af00';
+            rpasswordbool = true;
+        }
+    }
+
+</script>
+<script>
+    const navBut = document.getElementById('nav-but');
+    const mobileNavOptions = document.getElementById('mobile-nav-options');
+    navBut.addEventListener('click', () => {
+        navBut.classList.toggle('close-nav');
+        mobileNavOptions.classList.toggle('close-mobile-nav');
+    });
+</script>
+</html>

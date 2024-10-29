@@ -1,0 +1,104 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login User</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="icon" type="image/x-icon" href="{% static 'images/acmcodespace_ele.png' %}">
+</head>
+<body>
+    <nav>
+        <div class="logo">
+            <img src="{% static 'images/ACM_Codespace_logo.png' %}" class="logo" alt="logo">
+            <div class="mobile-nav-container">
+                <span class="vertical-line"></span>
+                <div class="nav-but close-nav" id="nav-but">
+                    <span style="--i: 0" class="nav-more"></span>
+                    <span style="--i: 1" class="nav-more"></span>
+                    <span style="--i: 2" class="nav-more"></span>
+                </div>
+            </div>
+        </div>
+        <ul class="nav-links">
+            <li><a href="/codespace">Home</a></li>
+            <li><a href="/codespace/practice">Practice</a></li>
+            <li><a href="/codespace/contests">Contests</a></li>
+        </ul>
+        <ul class="mobile-nav-links nav-links close-mobile-nav" id="mobile-nav-options">
+            <li><a href="/codespace">Home</a></li>
+            <li><a href="/codespace/practice">Practice</a></li>
+            <li><a href="/codespace/contests">Contests</a></li>
+        </ul>
+        <div class="authorize">
+            <a href="/codespace/user_registration">Register</a>
+        </div>
+    </nav>
+    <div class="main-body" style="align-items: center; height: calc(100vh - 100px);">
+        <form action="user_login" onsubmit="return validateForm()" method="post" class="question-list-items scrollhide" style="flex-direction: row; height: calc(100% - 20px); align-items: center;">
+            {% csrf_token %}
+            <div class="flex-display scrollhide" style="width: calc(100% - 20px); height: fit-content; flex-direction: column;">
+                <h3 class="page-head">Login Here</h3>
+                <div class="input-group">
+                    <input placeholder="" type="text" name="username" autocomplete="off" class="input" id="username">
+                    <label class="user-label">username/email</label>
+                    <p class="msg" id="usernameMsg">Username already exists</p>
+                </div>
+                <div class="input-group">
+                    <input placeholder="" type="password" name="password" autocomplete="off" class="input" min="0" id="password">
+                    <label class="user-label">Password</label>
+                    <p class="msg" id="passwordMsg">Password must contain atleast 8 characters, 1 number, 1 special character(. @_)</p>
+                </div>
+                {% if message %}
+                    <span class="color-red" style="margin-bottom: 10px;">{{ message }}</span>
+                {% endif %}
+                <div style="width: min(100%, 500px); text-align: end; margin-bottom: 10px; padding-right: 10px;">
+                    <a href="/codespace/reset_password" class="link" style="color: #0F649D; margin-bottom: 10px;">forget password</a>
+                </div>
+                <button class="btn">
+                    Submit
+                </button>
+            </div>
+        </from>
+    </div>
+    <footer>
+        <p>&copy; copy rights reserved for <a href="https://gmritchapter.acm.org" class="link" target="_blank"><strong>ACM GMRIT</strong></a></p>
+        <p>Developed by <a href="https://bhargavratnala.github.io" class="link" target="_blank"><strong>Bhargav Ratnala</strong></a> & <a href="https://akramshaik22.github.io" class="link" target="_blank"><strong>Akram Shaik</strong></a> (2021-25)</p>
+    </footer>
+</body>
+<script>
+
+    let usernamereg = /^[a-zA-Z0-9_]+$/;
+    let emailreg = /^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$/;
+    let passwordreg = /^.*(?=.{8,})(?=.*[a-zA-Z])(?=.*\d)(?=.*[._ @"]).*$/;
+    function validateForm(){
+        let username = document.getElementById('username');
+        let usernameMsg = document.getElementById("usernameMsg");
+        let usernameValue = username.value;
+        usernameMsg.style.display = 'none';
+        let bool = true;
+        if(usernameValue.length < 4 || (usernamereg.test(usernameValue) == false && emailreg.test(usernameValue) == false))
+        {
+            usernameMsg.style.display = 'block';
+            usernameMsg.innerHTML = "username/email format not match";
+            bool = false;
+        }
+        let password = document.getElementById('password');
+        let passwordMsg = document.getElementById('passwordMsg');
+        passwordMsg.style.display = 'none';
+        if(passwordreg.test(password.value) == false){
+            passwordMsg.style.display = 'block';
+            bool = false;
+        }
+        return bool;
+    }
+
+    const navBut = document.getElementById('nav-but');
+    const mobileNavOptions = document.getElementById('mobile-nav-options');
+    navBut.addEventListener('click', () => {
+        navBut.classList.toggle('close-nav');
+        mobileNavOptions.classList.toggle('close-mobile-nav');
+    });
+</script>
+</html>

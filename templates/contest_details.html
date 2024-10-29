@@ -1,0 +1,176 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ contest_title }} Details</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="icon" type="image/x-icon" href="{% static 'images/acmcodespace_ele.png' %}">
+</head>
+<body>
+    <nav>
+        <div class="logo">
+            <img src="{% static 'images/ACM_Codespace_logo.png' %}" class="logo" alt="logo">
+        </div>
+        <div class="authorize">
+            <a href="/codespace/admin_logout" class="link">Logout</a>
+        </div>
+    </nav>
+        
+    <div class="main-body" style="align-items: flex-start;">
+        <div class="about admin-about">
+            <div class="flex-display user-info">
+                <img src="{% static 'images/profile.jpeg' %}" alt="user profile pic" class="user-profile-pic">
+                <h2>{{ user.get_full_name }}</h2>
+                <span>{{ user.username }}</span>
+            </div>
+            <div class="flex-display other-info">
+                <h2>{{ contest_title }}</h2>
+                <span><a href="/codespace/admin_contests/{{ contest_type }}/{{ contest_code }}/" class="link">About</a></span>
+                <span><a href="/codespace/admin_contests/{{ contest_type }}/{{ contest_code }}/questions/" class="link">Questions</a></span>
+                <span><a href="/codespace/admin_contests/{{ contest_type }}/{{ contest_code }}/registrations/" class="link">Registrations</a></span>
+                <span><a href="/codespace/admin_contests/{{ contest_type }}/{{ contest_code }}/submissions/" class="link">Submissions</a></span>
+                <span><a href="/codespace/admin_contests/{{ contest_type }}/{{ contest_code }}/dashboard/" class="link">Dashboard</a></span>
+            </div>
+        </div>
+        <div class="contest" style="justify-content: flex-start; width: max(70%, calc(100% - 300px));">
+            <div style="display: flex; width: 100%; justify-content: space-between; padding: 10px;">
+                <a class="btn question-btn" onclick="toggleQuestionDiv()" href="/codespace/admin_contests/{{ contest_type }}/" style="text-decoration:none; color:black;">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512">
+                        <path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.2 288 416 288c17.7 0 32-14.3 32-32s-14.3-32-32-32l-306.7 0L214.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/>
+                    </svg>
+                    &nbsp;Back
+                </a>
+                <div style="display: flex; align-items: center;">
+                    {% if contest.status == "published" %}
+                    <a class="btn" style="background-color: #26D2AD;text-decoration:none;color:black;font-weight:bold" href="/codespace/admin_contests/{{ contest_type  }}/{{ contest_code }}/start_contest/">
+                        Start
+                    </a>
+                    {% elif contest.status == "ongoing" %}
+                        {% if codewars %}
+                            <h4>Online Participant : {{ online_participants }}</h4>
+                            {% if opponent_status %}
+                            <a class="btn" style="background-color: #FF914D;text-decoration:none; color:black; font-weight:bold; width: fit-content; margin: 10px; padding: 5px;" href="/codespace/admin_contests/{{ contest_type  }}/{{ contest_code }}/set_opponents/">
+                                Set Opponents
+                            </a>
+                            {% endif %}
+                        {% endif %}
+                        <a class="btn" style="background-color: #FF914D;text-decoration:none; color:black; font-weight:bold" href="/codespace/admin_contests/{{ contest_type  }}/{{ contest_code }}/end_contest/">
+                            End
+                        </a>
+                    {% elif contest.status == "drafts" %}
+                    <a class="btn" style="background-color: #26D2AD;text-decoration:none; color:black; font-weight:bold" href="/codespace/admin_contests/{{ contest_type  }}/{{ contest_code }}/publish/">
+                        Publish
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="publish-head">
+                {% if type %}
+                <h2><b>Details</b></h2>
+                <hr width="100%">
+                {% else %}
+                <h2><b>Edit Details</b></h2>
+                <hr width="100%">
+                {% endif %}
+            </div>
+            {% if type %}
+            <form action="./" method="post" enctype="multipart/form-data" id="add_contest_form" class="question-list-items scrollhide" style="flex-direction: row;" autocomplete="False">
+            {% else %}
+            <form action="./edit_contest" method="post" enctype="multipart/form-data" id="add_contest_form" class="question-list-items scrollhide" style="flex-direction: row;" autocomplete="False">
+            {% endif %}
+            
+                {% csrf_token %}
+                <div class="text-details">
+                    <div class="flex-display scrollhide" style="overflow-y: scroll; overflow-x: hidden; width: calc(100% - 20px); height: 100%; flex-direction: column;">
+                        <div class="input-group">
+                            <input placeholder="" required="" type="text" name="organiser" autocomplete="off" class="input" value="{{ contest.organiser }}" {{ type }}>
+                            <label class="user-label">Organiser</label>
+                        </div>
+                        <div class="input-group">
+                            <input placeholder="" required="" type="text" name="contest_code" autocomplete="off" class="input"  value="{{ contest_code }}" disabled>
+                            <label class="user-label">Contest Code</label>
+                        </div>
+                        <div class="input-group">
+                            <input placeholder="" required="" type="text" name="title" autocomplete="off" class="input"  value="{{ contest.title }}" {{ type }}>
+                            <label class="user-label">Title</label>
+                        </div>
+                        <div class="input-group">
+                            <input placeholder="" type="text" name="contest_pwd" autocomplete="off" class="input"  value="{{ contest.contest_pwd }}" {{ type }}>
+                            <label class="user-label">Contest Password</label>
+                        </div>
+                        <div class="input-group description-input"  style="height:200px;">
+                            <textarea placeholder="" required="" type="text" name="description" autocomplete="off" class="input  scrollhide"  style="height:inherit;" {{ type }}>{{ contest.description }}</textarea>
+                            <label class="user-label">Description</label>
+                        </div>
+                        <div class="input-group">
+                            <input placeholder="" required="" type="text" name="venue" autocomplete="off" class="input"  value="{{ contest.venue }}" {{ type }}>
+                            <label class="user-label">Venue</label>
+                        </div>
+                        <div class="input-group">
+                            <input placeholder="" required="" type="text" name="contact" autocomplete="off" class="input"  value="{{ contest.contact }}" {{ type }}>
+                            <label class="user-label">Contact</label>
+                        </div>
+                        <div class="input-group">
+                            <input placeholder="" type="text" name="prize" autocomplete="off" class="input"  value="{{ contest.prize }}" {{ type }}>
+                            <label class="user-label">Prize</label>
+                        </div>
+                        <div class="input-group">
+                            <input placeholder="" required="" type="text" name="time" autocomplete="off" class="input"  value="{{ contest.time }}" {{ type }}>
+                            <label class="user-label">Duration</label>
+                        </div>
+                        <div class="input-group">
+                            <input placeholder="" required="" type="datetime-local" name="start_date" autocomplete="off" class="input" value="{{ contest.start_date|date:'Y-m-d\TH:i' }}" {{ type }}>
+                            <label class="user-label">Start Date</label>
+                        </div>
+                        <div class="input-group">
+                            <input placeholder="" required="" type="datetime-local" name="end_date" autocomplete="off" class="input" value="{{ contest.end_date|date:'Y-m-d\TH:i' }}" {{ type }}>
+                            <label class="user-label">End date</label>
+                        </div>
+                        {% if contest_type == "past" %}
+                        <div class="input-group">
+                            <input placeholder="" required="" type="text" name="winner" autocomplete="off" class="input" value="{{ winner }}" {{ type }}>
+                            <label class="user-label">Winner Username</label>
+                        </div>
+                        <div class="input-group">
+                            <input placeholder="" required="" type="text" name="runner" autocomplete="off" class="input" value="{{ runner }}" {{ type }}>
+                            <label class="user-label">Runner Username</label>
+                        </div>
+                        {% else %}
+                        <input type="hidden" value="" name="winner">
+                        <input type="hidden" value="" name="runner">
+                        {% endif %}
+                        <input type="hidden" value="{{ type }}" name="type">
+                    </div>
+                </div>
+                <div class="image-details">
+                    <div class="upload">
+                        <div class="preview-img-div" onclick="document.getElementById('files').click()">
+                            <span>Image</span>
+                            <img id="image" class="preview-img" src="/codespace/{{ contest.poster.url }}"/>
+                        </div>
+                        {% if type == "" %}
+                            <input placeholder="" accept="image/*" type="file" id="files" value="upload" name="poster"/>
+                        {% endif %}
+                    </div>
+                    <button class="btn" type="submit">
+                    {% if type == "disabled" %}
+                        Edit
+                    {% else %}
+                        Save
+                    {% endif %}
+                    </button>
+                    
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+<script>
+    document.getElementById('files').onchange = function () {
+        var src = URL.createObjectURL(this.files[0]);
+        document.getElementById('image').src = src;
+    }
+</script>
+</html>

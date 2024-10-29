@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ACM Codespace - Email Notification</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            color: #333;
+        }
+
+        p {
+            color: #555;
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .otp-section {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .otp-label {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .otp-value {
+            font-size: 20px;
+            color: #007bff;
+        }
+
+        .copy-button {
+            position: absolute;
+            top: 50%;
+            right: 10px;
+            transform: translateY(-50%);
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .copy-success-message {
+            color: #28a745;
+            margin-top: 10px;
+        }
+
+        hr {
+            border: 1px solid #ddd;
+            margin: 20px 0;
+        }
+
+        footer {
+            color: #777;
+            font-size: 12px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+
+        <p>Hello {{ user.fname }} {{ user.lname }},</p>
+
+        <p>Your registration for the contest <strong>{{ contest.title }}</strong> has been successfully completed. The contest will start on <strong>{{ contest.start_date }}</strong> and end on <strong>{{ contest.end_date }}</strong>.</p>
+
+        <p>Here are the details of the contest:</p>
+
+        <ul>
+            <li><strong>Contest Title:</strong> {{ contest.title }}</li>
+            <li><strong>Start Time:</strong> {{ contest.start_date }}</li>
+            <li><strong>End Time:</strong> {{ contest.end_date }}</li>
+            <li><strong>Duration:</strong> {{ contest.time }} minutes</li>
+        </ul>
+
+        <p>For more details, visit the contest page <a href="https://gmritchapter.acm.org/codespace/contests/{{ contest.contest_code }}">{{ contest.title }}</a>.</p>
+
+        <img src="https://gmritchapter.acm.org/codespace{{ contest.poster.url }}" alt="{{ contest.title }}" style="width: 100%; margin-bottom: 20px;">
+
+        <p>If you have any questions or concerns, feel free to contact us at <a href="mailto:acmcodespacegmrit@gmail.com">acmcodespacegmrit@gmail.com</a>.</p>
+
+        <p>Thank you for using ACM Codespace!</p>
+
+        <hr>
+
+        <footer>This email was sent from ACM Codespace. Please do not reply to this email.</footer>
+
+    </div>
+</body>
+</html>

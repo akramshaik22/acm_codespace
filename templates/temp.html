@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Mails</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+</head>
+<body>
+    <button onclick="send_temp_mails()">Send temp Mails</button>
+</body>
+
+<script>
+    function send_temp_mails()
+    {
+        $.ajax({
+            type: "POST",
+            url: "/codespace/test_mail",
+            data: "csrfmiddlewaretoken={{ csrf_token }}",
+            success: function(request){
+                console.log(request);
+            },
+            error: function(request){
+                alert('Internal Server Error');
+            }
+        });
+    }
+    
+</script>
+
+</html>

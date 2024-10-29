@@ -1,0 +1,251 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Questions</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="icon" type="image/x-icon" href="{% static 'images/acmcodespace_ele.png' %}">
+</head>
+<body>
+    <nav>
+        <div class="logo">
+            <img src="{% static 'images/ACM_Codespace_logo.png' %}" class="logo" alt="logo">
+        </div>
+        <div class="authorize">
+            username
+            <img scr="{% static 'images/ACM_Codespace_logo.png' %}" class="profile-img">
+            <ul>
+                <li><a href="#">Profile</a></li>
+                <li><a href="#">Logout</a></li>
+            </ul>
+        </div>
+    </nav>
+    <div class="main-body">
+        <div class="about admin-about">
+            <div class="flex-display user-info">
+                <img src="{% static 'images/profile.jpeg' %}" alt="user profile pic" class="user-profile-pic">
+                <h2>Name</h2>
+                <span>username</span>
+            </div>
+            <div class="flex-display other-info">
+                <h2>Contests Title</h2>
+                <span>About</span>
+                <span>Questions</span>
+                <span>Dashboard</span>
+            </div>
+        </div>
+        <div class="contest" style="justify-content: flex-start; width: max(70%, calc(100% - 300px));">
+            <div style="display: flex; width: 100%; justify-content: space-between; padding: 10px;">
+                <button class="btn question-btn" onclick="toggleQuestionDiv()">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512">
+                        <path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.2 288 416 288c17.7 0 32-14.3 32-32s-14.3-32-32-32l-306.7 0L214.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/>
+                    </svg>
+                    &nbsp;Back
+                </button>
+            </div>
+            <div class="publish-head">
+                <h2><b>Add Question</b></h2>
+                <hr width="100%">
+            </div>
+            <form action="add_que" method="post" enctype="multipart/form-data" id="add_que_form" class="question-list-items scrollhide" style="flex-direction: row;" onsubmit="serializeTestcase()">
+                {% csrf_token %}
+                <!--<div class="question-list-items scrollhide" style="flex-direction: row;">-->
+                    <div class="text-details">
+                        <div class="flex-display scrollhide" style="overflow-y: scroll; overflow-x: hidden; width: calc(100% - 20px); height: calc(100% - 20px); flex-direction: column;">
+                            <div class="input-group">
+                                <input placeholder="" required="" type="text" name="contest_code" autocomplete="off" class="input">
+                                <label class="user-label">Contest Code</label>
+                            </div>
+                            <div class="input-group">
+                                <input placeholder="" required="" type="text" name="title" autocomplete="off" class="input">
+                                <label class="user-label">Title</label>
+                            </div>
+                            <div class="input-group">
+                                <div class="radio-input" style="--count:3">
+                                    <label>
+                                    <input placeholder="" value="Easy" name="level" id="value-1" type="radio" checked="">
+                                    <span>Easy</span>
+                                    </label>
+                                    <label>
+                                      <input placeholder="" value="Medium" name="level" id="value-2" type="radio">
+                                    <span>Medium</span>
+                                    </label>
+                                    <label>
+                                      <input placeholder="" value="Hard" name="level" id="value-3" type="radio">
+                                    <span>Hard</span>
+                                    </label>
+                                    <span class="selection"></span>
+                                </div>
+                            </div>
+                            <div class="input-group description-input">
+                                <textarea placeholder="" required="" type="text" name="que_desc" autocomplete="off" class="input  scrollhide"></textarea>
+                                <label class="user-label">Description</label>
+                            </div>
+                            <div class="input-group">
+                                <input placeholder="" required="" type="number" name="score" autocomplete="off" class="input" min="0">
+                                <label class="user-label">Score</label>
+                            </div>
+                            <div class="input-group" style="display: none;">
+                                <input placeholder="" required="" type="hidden" name="tc_count" value='1' autocomplete="off" class="input" min="0" id="tc_count">
+                                <label class="user-label">No. of Testcases</label>
+                            </div>
+                            <div class="testcases">
+                            <div class="flex-display" style="justify-content: space-between; width: 100%; padding: 0 5px;">
+                                <span>Test Cases</span>
+                                <button class="btn question-btn" style="font-size: 0.8rem; color: #969696;" onclick="addTeastcase()">+ add testcase</button>
+                            </div>
+                                <ol class="testcase-list" id="testcases">
+                                    <li>
+                                        <div class="testcase">
+                                            <div class="input-group description-test">
+                                                <textarea placeholder="" required="" type="text" name="description" autocomplete="off" class="input  scrollhide"></textarea>
+                                                <label class="user-label">Input</label>
+                                            </div>
+                                            <div class="input-group description-test">
+                                                <textarea placeholder="" required="" type="text" name="description" autocomplete="off" class="input  scrollhide"></textarea>
+                                                <label class="user-label">Output</label>
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ol>
+                            </div>
+                            <div class="input-group">
+                                <input placeholder="" required="" type="text" name="tle" autocomplete="off" class="input" min="0">
+                                <label class="user-label">TLE</label>
+                            </div>
+                            <div class="input-group">
+                                <input placeholder="" required="" style="display: none;" type="file" accept=".py,.c,.cpp,.java,.txt" name="solution" id="solution" autocomplete="off" class="input" >
+                                <button class="upload-solution" onclick="document.getElementById('solution').click()">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 3H12H8C6.34315 3 5 4.34315 5 6V18C5 19.6569 6.34315 21 8 21H11M13.5 3L19 8.625M13.5 3V7.625C13.5 8.17728 13.9477 8.625 14.5 8.625H19M19 8.625V11.8125" stroke="#fffffff" stroke-width="2"></path>
+                                        <path d="M17 15V18M17 21V18M17 18H14M17 18H20" stroke="#fffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                    </svg>
+                                    Solution
+                                </button>
+                                <span id="filename">No file chosen</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="image-details">
+                        <div class="upload">
+                            <div class="preview-img-div" onclick="document.getElementById('files').click()">
+                                <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512" class="upload-add">
+                                    <path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32V224H48c-17.7 0-32 14.3-32 32s14.3 32 32 32H192V432c0 17.7 14.3 32 32 32s32-14.3 32-32V288H400c17.7 0 32-14.3 32-32s-14.3-32-32-32H256V80z"/>
+                                </svg>
+                                <span>Upload</span>
+                                <img id="image" class="preview-img"/>
+                            </div>
+                            <input placeholder="" accept="image/*" type="file" name="que_img" id="files" value="upload"/>
+                        </div>
+                        <input placeholder="" type="file" name="input_cases" id="input_cases" value="" hidden="">
+                        <input placeholder="" type="file" name="output_cases" id="output_cases" value="" hidden="">
+                        <button class="btn" type="submit">
+                            Submit
+                        </button>
+                    </div>
+                <!--</div>-->
+            </form>
+        </div>
+    </div>
+</body>
+<script>
+    let testcase_count = 1;
+
+    document.getElementById('files').onchange = function () {
+        var src = URL.createObjectURL(this.files[0]);
+        console.log(this.files[0].name);
+        document.getElementById('image').src = src;
+    }
+
+    document.getElementById('solution').onchange = function () {
+        document.getElementById('filename').innerHTML = this.files[0].name;
+    }
+
+    function addTeastcase(){
+        let testcases = document.getElementById('testcases');
+        let testcase = document.createElement('li');
+        testcase.innerHTML = `<div class="testcase">
+                                <div class="input-group description-test">
+                                    <textarea placeholder="" required="" type="text" name="description" autocomplete="off" class="input  scrollhide"></textarea>
+                                    <label class="user-label">Input</label>
+                                </div>
+                                <div class="input-group description-test">
+                                    <textarea placeholder="" required="" type="text" name="description" autocomplete="off" class="input  scrollhide"></textarea>
+                                    <label class="user-label">Output</label>
+                                </div>
+                                <button class="btn question-btn color-red" style="font-size: 0.8rem;" onclick="this.parentElement.parentElement.remove()">x</button>
+                            </div>`;
+        testcases.appendChild(testcase);
+    }
+    
+    function serializeTestcase(){
+        let inputserial = "";
+        let outputserial = "";
+        let testcases = document.getElementsByClassName('testcase');
+        for(let i=0; i<testcases.length; i++){
+            let inputs = testcases[i].getElementsByTagName('textarea')[0].value;
+            let outputs = testcases[i].getElementsByTagName('textarea')[1].value;
+            inputserial += inputs;
+            outputserial += outputs;
+            if (i!=testcases.length-1)
+            {
+                inputserial += "\n@dlim@\n";
+                outputserial += "\n@dlim@\n";
+            }
+            
+        }
+        // alert(inputserial);
+        
+        // document.getElementById('input_cases').value = inputserial;
+        // document.getElementById('output_cases').value = outputserial;
+        
+        // const formData = new FormData(document.getElementById('add_que_form'));
+        // const blob1 = new Blob([inputserial], { type: 'plain/text' });
+        // formData.append('input_cases', blob1, 'input_cases.txt')
+        // const blob2 = new Blob([outputserial], { type: 'plain/text' });
+        // formData.append('output_cases', blob2, 'output_cases.txt');
+        
+        // Get a reference to our file input
+        
+        const fileInput = document.getElementById('input_cases');
+        const fileOutput = document.getElementById('output_cases');
+    
+        // Create a new File object
+        const myFile1 = new File([inputserial], 'input_cases.txt', {
+            type: 'text/plain',
+            lastModified: new Date(),
+        });
+        
+        const myFile2 = new File([outputserial], 'output_cases.txt', {
+            type: 'text/plain',
+            lastModified: new Date(),
+        });
+    
+        // Now let's create a FileList
+        const dataTransfer1 = new DataTransfer();
+        dataTransfer1.items.add(myFile1);
+        fileInput.files = dataTransfer1.files;
+        
+        const dataTransfer2 = new DataTransfer();
+        dataTransfer2.items.add(myFile2);
+        fileOutput.files = dataTransfer2.files;
+    
+        // Help Safari out
+        if (fileInput.webkitEntries.length) {
+            fileInput.dataset.file = `${dataTransfer1.files[0].name}`;
+        }
+        
+        if (fileOutput.webkitEntries.length) {
+            fileOutput.dataset.file = `${dataTransfer2.files[0].name}`;
+        }
+        
+        return True;
+    }
+    
+    
+    
+    // setInterval(() => window.location.reload(), 3000);
+</script>
+</html>

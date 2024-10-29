@@ -1,0 +1,809 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ contest_title }} Questions</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="icon" type="image/x-icon" href="{% static 'images/acmcodespace_ele.png' %}">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+</head>
+<body>
+    <nav>
+        <div class="logo">
+            <img src="{% static 'images/ACM_Codespace_logo.png' %}" class="logo" alt="logo">
+        </div>
+        <div class="authorize">
+            <a href="/codespace/admin_logout" class="link" style="margin-right:20px;">Logout</a>
+        </div>
+    </nav>
+    <div class="main-body" style="position: relative;">
+        <div class="about admin-about">
+            <div class="flex-display user-info">
+                <img src="{% static 'images/profile.jpeg' %}" alt="user profile pic" class="user-profile-pic">
+                <h2>{{ user.get_full_name }}</h2>
+                <span>{{ user.username }}</span>
+            </div>
+            <div class="flex-display other-info">
+                <h2>{{ contest_title }}</h2>
+                <span><a href="/codespace/admin_contests/{{ contest_type }}/{{ contest_code }}/" class="link">About</a></span>
+                <span><a href="/codespace/admin_contests/{{ contest_type }}/{{ contest_code }}/questions/" class="link">Questions</a></span>
+                <span><a href="/codespace/admin_contests/{{ contest_type }}/{{ contest_code }}/registrations/" class="link">Registrations</a></span>
+                <span><a href="/codespace/admin_contests/{{ contest_type }}/{{ contest_code }}/submissions/" class="link">Submissions</a></span>
+                <span><a href="/codespace/admin_contests/{{ contest_type }}/{{ contest_code }}/dashboard/" class="link">Dashboard</a></span>
+            </div>
+        </div>
+        <div class="contest" style="justify-content: flex-start; width: max(70%, calc(100% - 300px));">
+            <div style="display: flex; width: 100%; justify-content: space-between; padding: 10px;">
+                <a class="btn question-btn" href="/codespace/admin_contests/{{ contest_type }}/{{ contest_code }}/" style="text-decoration:none; color:black;">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512">
+                        <path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.2 288 416 288c17.7 0 32-14.3 32-32s-14.3-32-32-32l-306.7 0L214.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/>
+                    </svg>
+                    &nbsp;Back
+                </a>
+                <button class="btn create-contest-btn" onclick="showAddQuestion()">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512">
+                        <path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32V224H48c-17.7 0-32 14.3-32 32s14.3 32 32 32H192V432c0 17.7 14.3 32 32 32s32-14.3 32-32V288H400c17.7 0 32-14.3 32-32s-14.3-32-32-32H256V80z"/>
+                    </svg>
+                    &nbsp;Add Question
+                </button>
+            </div>
+            <div class="head">
+                <h2><b>Problems</b></h2>
+                <div>
+                    <span>{{ total_que }} Questions</span>
+                    <span class="vertical-line"></span>
+                    <span>Total Marks : {{ total_score }}</span>
+                </div>
+            </div>
+            <div class="question-list-items scrollhide" id="question-list">
+                {% for que in ques %}
+                <div class="question-card">
+                    <div class="question-details">
+                        {% if que.title %}
+                        <h2>{{ forloop.counter }}. {{ que.title }}</h2>
+                        <span>{{ que.level }}</span>
+                        {% else %}
+                        <h3>{{ forloop.counter }}. (MCQ)</h3>
+                        {% endif %}
+                    </div>
+                    <div class="question-status">
+                        <span class="score">Score : {{ que.score }}</span>
+                        <div class="question-details" style="align-items: center;">
+                            <button class="slove-question" onclick="showQuestion({{ que.id }})">
+                                <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512">
+                                    <path d="M438.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L338.8 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l306.7 0L233.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160z"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="contest" style="justify-content: flex-start; width: max(70%, calc(100% - 300px)); position: absolute; top: 0; right: -100%; background-color: #fff; height: 100%;" id="addquestion-div">
+            <div style="display: flex; width: 100%; justify-content: space-between; padding: 10px;">
+                <button class="btn question-btn" onclick="closeAllQuestions()">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512">
+                        <path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.2 288 416 288c17.7 0 32-14.3 32-32s-14.3-32-32-32l-306.7 0L214.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/>
+                    </svg>
+                    &nbsp;Back
+                </button>
+            </div>
+            <div class="publish-head">
+                <h2><b>Add Question</b></h2>
+                <hr width="80%">
+                <div class="input-group" style="width: 250px;">
+                    <div class="radio-input" style="--count:3; --container_width: 250px;">
+                        <label>
+                        <input placeholder="" value="coding" name="question_type" id="value-1" type="radio" checked="">
+                        <span>Coding</span>
+                        </label>
+                        <label>
+                        <input placeholder="" value="mcq" name="question_type" id="value-2" type="radio">
+                        <span>MCQ</span>
+                        </label>
+                        <label>
+                        <input placeholder="" value="debuging" name="question_type" id="value-3" type="radio">
+                        <span>Debuging</span>
+                        </label>
+                        <span class="selection"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="sliding-window" id="slide-window">
+                <form action="./add_que" method="post" enctype="multipart/form-data" id="add_code_form" class="question-list-items scrollhide" style="flex-direction: row; position: absolute; top: 0; transform: translateX(0); height:100%;" onsubmit="serializeTestcase('add')">
+                    {% csrf_token %}
+                        <input type="hidden" name="que_type" id="add_que_type" value="0">
+                        <div class="text-details">
+                            <div class="flex-display scrollhide" style="overflow-y: scroll; overflow-x: hidden; width: calc(100% - 20px); height: calc(100% - 20px); flex-direction: column;">
+                                <div class="input-group">
+                                    <input placeholder="" required="" type="text" name="contest_code" autocomplete="off" class="input" value="{{ contest_code }}" disabled>
+                                    <label class="user-label">Contest Code</label>
+                                </div>
+                                <div class="input-group">
+                                    <input placeholder="" required="" type="text" name="title" autocomplete="off" class="input">
+                                    <label class="user-label">Title</label>
+                                </div>
+                                <div class="input-group">
+                                    <div class="radio-input" style="--count:3">
+                                        <label>
+                                        <input placeholder="" value="Easy" name="level" id="value-1" type="radio" checked="">
+                                        <span>Easy</span>
+                                        </label>
+                                        <label>
+                                        <input placeholder="" value="Medium" name="level" id="value-2" type="radio">
+                                        <span>Medium</span>
+                                        </label>
+                                        <label>
+                                        <input placeholder="" value="Hard" name="level" id="value-3" type="radio">
+                                        <span>Hard</span>
+                                        </label>
+                                        <span class="selection"></span>
+                                    </div>
+                                </div>
+                                <div class="input-group description-input">
+                                    <textarea placeholder="" required="" type="text" name="que_desc" autocomplete="off" class="input  scrollhide"></textarea>
+                                    <label class="user-label">Description</label>
+                                </div>
+                                <div class="input-group">
+                                    <input placeholder="" required="" type="number" name="score" autocomplete="off" class="input" min="0">
+                                    <label class="user-label">Score</label>
+                                </div>
+                                <div id="add_debug_options" style="display: none; width: min(500px, 100%);">
+                                    <div class="input-group" style="margin-left: 0;">
+                                        <input placeholder="" type="text" name="debug_lang" autocomplete="off" class="input" min="0">
+                                        <label class="user-label">Debug Language</label>
+                                    </div>
+                                    <div class="input-group description-input" style="margin-left: 0;">
+                                        <textarea placeholder="" type="text" name="debug_code" autocomplete="off" class="input  scrollhide"></textarea>
+                                        <label class="user-label">Debug Code</label>
+                                    </div>
+                                </div>
+                                <div class="input-group" style="display: none;">
+                                    <input placeholder="" required="" type="hidden" name="tc_count" value='1' autocomplete="off" class="input" min="0" id="add_tc_count">
+                                    <label class="user-label">No. of Testcases</label>
+                                </div>
+                                <div class="testcases">
+                                <div class="flex-display" style="justify-content: space-between; width: 100%; padding: 0 5px;">
+                                    <span>Test Cases</span>
+                                    <button class="btn question-btn" style="font-size: 0.8rem; color: #969696;" type="button" onclick="addTeastcase('add')">+ add testcase</button>
+                                </div>
+                                    <ol class="testcase-list" id="add-testcases">
+                                        <div class="testcase add_testcase">
+                                            <div class="input-group description-test">
+                                                <textarea placeholder="" required="" type="text" name="description" autocomplete="off" class="input  scrollhide"></textarea>
+                                                <label class="user-label">Sample Input</label>
+                                            </div>
+                                            <div class="input-group description-test">
+                                                <textarea placeholder="" required="" type="text" name="description" autocomplete="off" class="input  scrollhide"></textarea>
+                                                <label class="user-label">Sample Output</label>
+                                            </div>
+                                        </div>
+                                        <li>
+                                            <div class="testcase add_testcase">
+                                                <div class="input-group description-test">
+                                                    <textarea placeholder="" required="" type="text" name="description" autocomplete="off" class="input  scrollhide"></textarea>
+                                                    <label class="user-label">Input</label>
+                                                </div>
+                                                <div class="input-group description-test">
+                                                    <textarea placeholder="" required="" type="text" name="description" autocomplete="off" class="input  scrollhide"></textarea>
+                                                    <label class="user-label">Output</label>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </ol>
+                                </div>
+                                <div class="input-group">
+                                    <input placeholder="" required="" type="text" name="tle" id="tle" autocomplete="off" class="input" min="0">
+                                    <label class="user-label">TLE</label>
+                                </div>
+                                <div class="input-group">
+                                    <input placeholder="" required="" style="display: none;" type="file" accept=".py,.c,.cpp,.java,.txt" name="solution" id="solution" autocomplete="off" class="input" >
+                                    <button class="upload-solution" onclick="document.getElementById('solution').click()">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 3H12H8C6.34315 3 5 4.34315 5 6V18C5 19.6569 6.34315 21 8 21H11M13.5 3L19 8.625M13.5 3V7.625C13.5 8.17728 13.9477 8.625 14.5 8.625H19M19 8.625V11.8125" stroke="#fffffff" stroke-width="2"></path>
+                                            <path d="M17 15V18M17 21V18M17 18H14M17 18H20" stroke="#fffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                        </svg>
+                                        Solution
+                                    </button>
+                                    <span id="filename">No file chosen</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="image-details">
+                            <div class="upload">
+                                <div class="preview-img-div" onclick="document.getElementById('files').click()">
+                                    <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512" class="upload-add">
+                                        <path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32V224H48c-17.7 0-32 14.3-32 32s14.3 32 32 32H192V432c0 17.7 14.3 32 32 32s32-14.3 32-32V288H400c17.7 0 32-14.3 32-32s-14.3-32-32-32H256V80z"/>
+                                    </svg>
+                                    <span>Upload</span>
+                                    <img id="image" class="preview-img"/>
+                                </div>
+                                <input placeholder="" accept="image/*" type="file" name="que_img" id="files" value="upload"/>
+                            </div>
+                            <input placeholder="" type="file" name="input_cases" id="add_input_cases" value="" hidden="">
+                            <input placeholder="" type="file" name="output_cases" id="add_output_cases" value="" hidden="">
+                            
+                            <input type="hidden" name="contest_code" value="{{ contest_code }}"/>
+                            <input type="hidden" name="contest_type" value="{{ contest_type }}"/>
+                            
+                            <button class="btn" type="submit">
+                                Submit
+                            </button>
+                        </div>
+                </form>
+                <form action="./add_mcq" method="post" onsubmit="serializeOption()" enctype="multipart/form-data" id="add_mcq_form" class="question-list-items scrollhide" style="flex-direction: row; position: absolute; top: 0; transform: translateX(100%); height:100%;" onsubmit="serializeTestcase('add')">
+                    {% csrf_token %}
+                        <div class="text-details">
+                            <div class="flex-display scrollhide" style="overflow-y: scroll; overflow-x: hidden; width: calc(100% - 20px); height: calc(100% - 20px); flex-direction: column;">
+                                <div class="input-group">
+                                    <input placeholder="" required="" type="text" name="contest_code" autocomplete="off" class="input" value="{{ contest_code }}" disabled>
+                                    <label class="user-label">Contest Code</label>
+                                </div>
+                                <div class="input-group description-input">
+                                    <textarea placeholder="" required="" type="text" name="que_desc" autocomplete="off" class="input  scrollhide"></textarea>
+                                    <label class="user-label">Description</label>
+                                </div>
+                                <div class="input-group">
+                                    <input placeholder="" required="" type="number" name="score" autocomplete="off" class="input" min="0">
+                                    <label class="user-label">Score</label>
+                                </div>
+                                <div class="input-group">
+                                    <input placeholder="" required="" type="number" name="duration" value='' autocomplete="off" class="input" min="0" id="add_tc_count">
+                                    <label class="user-label">Duration</label>
+                                </div>
+                                <div class="testcases">
+                                    <div class="flex-display" style="justify-content: space-between; width: 100%; padding: 0 5px;">
+                                        <span>Options</span>
+                                        <button class="btn question-btn" type="button" style="font-size: 0.8rem; color: #969696;" onclick="addOption()">+ add option</button>
+                                    </div>
+                                    <ol class="mcq-options" id="mcqoptions" style="list-style: none;">
+                                        <li>
+                                            <div class="mcq-option">
+                                                <input type="radio" name="correct_op" value="1">
+                                                <div class="flex-display" style="width: 100%;">
+                                                    <div class="circle" onclick='this.parentElement.parentElement.children[0].checked=true'>
+                                                        <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512">
+                                                            <path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM369 209L241 337c-9.4 9.4-24.6 9.4-33.9 0l-64-64c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l47 47L335 175c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9z"/>
+                                                        </svg>
+                                                    </div>
+                                                    <textarea placeholder="Option Answer" autocomplete="off" class="input  scrollhide" required></textarea>
+                                                </div>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="mcq-option">
+                                                <input type="radio" name="correct_op" value="2">
+                                                <div class="flex-display" style="width: 100%;">
+                                                    <div class="circle" onclick='this.parentElement.parentElement.children[0].checked=true'>
+                                                        <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512">
+                                                            <path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM369 209L241 337c-9.4 9.4-24.6 9.4-33.9 0l-64-64c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l47 47L335 175c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9z"/>
+                                                        </svg>
+                                                    </div>
+                                                    <textarea placeholder="Option Answer" autocomplete="off" class="input  scrollhide" required></textarea>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </ol>
+                                </div>
+                                <input type="hidden" value="" name="options" id="options">
+                                <input type="hidden" value="" name="selected_op" id="selected_op">
+                            </div>
+                        </div>
+                        <div class="image-details">
+                            <div class="upload">
+                                <div class="preview-img-div" onclick="document.getElementById('files').click()">
+                                    <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512" class="upload-add">
+                                        <path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32V224H48c-17.7 0-32 14.3-32 32s14.3 32 32 32H192V432c0 17.7 14.3 32 32 32s32-14.3 32-32V288H400c17.7 0 32-14.3 32-32s-14.3-32-32-32H256V80z"/>
+                                    </svg>
+                                    <span>Upload</span>
+                                    <img id="image" class="preview-img"/>
+                                </div>
+                                <input placeholder="" accept="image/*" type="file" name="que_img" id="files" value="upload"/>
+                            </div>                            
+                            <input type="hidden" name="contest_code" value="{{ contest_code }}"/>
+                            <input type="hidden" name="contest_type" value="{{ contest_type }}"/>
+                            
+                            <button class="btn" type="submit">
+                                Submit
+                            </button>
+                        </div>
+                </form>
+            </div>
+        </div>
+        
+        
+        <div class="contest" style="justify-content: flex-start; width: max(70%, calc(100% - 300px)); position: absolute; top: 0; right: -100%; background-color: #fff; height: 100%;" id="editquestion">
+            <div style="display: flex; width: 100%; justify-content: space-between; padding: 10px;">
+                <button class="btn question-btn" onclick="closeAllQuestions()">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512">
+                        <path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.2 288 416 288c17.7 0 32-14.3 32-32s-14.3-32-32-32l-306.7 0L214.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/>
+                    </svg>
+                    &nbsp;Back
+                </button>
+            </div>
+            <div class="publish-head">
+                <h2><b>Edit Question</b></h2>
+                <hr width="100%">
+            </div>
+            <form action="./edit_que" method="post" enctype="multipart/form-data" id="add_que_form" class="question-list-items scrollhide" style="flex-direction: row;" onsubmit="serializeTestcase('edit')">
+                {% csrf_token %}
+                <input type="hidden" name="que_type" id="edit_que_type">
+                <!--<div class="question-list-items scrollhide" style="flex-direction: row;">-->
+                    <div class="text-details">
+                        <div class="flex-display scrollhide" style="overflow-y: scroll; overflow-x: hidden; width: calc(100% - 20px); height: calc(100% - 20px); flex-direction: column;">
+                            <div class="input-group">
+                                <input placeholder="" required="" type="text" name="contest_code" id="edit_contest_code" autocomplete="off" class="input" value="{{ contest_code }}" disabled>
+                                <label class="user-label">Contest Code</label>
+                            </div>
+                            <div class="input-group" id="edit_title_parent">
+                            </div>
+                            <div class="input-group">
+                                <div class="radio-input" style="--count:3">
+                                    <label>
+                                    <input placeholder="" value="Easy" name="level" id="edit_Easy" type="radio">
+                                    <span>Easy</span>
+                                    </label>
+                                    <label>
+                                      <input placeholder="" value="Medium" name="level" id="edit_Medium" type="radio">
+                                    <span>Medium</span>
+                                    </label>
+                                    <label>
+                                      <input placeholder="" value="Hard" name="level" id="edit_Hard" type="radio">
+                                    <span>Hard</span>
+                                    </label>
+                                    <span class="selection"></span>
+                                </div>
+                            </div>
+                            <div class="input-group description-input" id="edit_que_desc_parent">
+                            </div>
+                            <div class="input-group" id="edit_score_parent">
+                            </div>
+                            <div class="input-group" style="display: none;">
+                                <input placeholder="" required="" type="hidden" name="tc_count" id="edit_tc_count" value='1' autocomplete="off" class="input" min="0" id="tc_count">
+                                <label class="user-label">No. of Testcases</label>
+                            </div>
+                            <div class="testcases">
+                            <div class="flex-display" style="justify-content: space-between; width: 100%; padding: 0 5px;">
+                                <span>Test Cases</span>
+                                <button class="btn question-btn" style="font-size: 0.8rem; color: #969696;" onclick="addTeastcase('edit')">+ add testcase</button>
+                            </div>
+                                <ol class="testcase-list" id="edit-testcases">
+                                </ol>
+                            </div>
+                            <div class="input-group" id="edit_tle_parent">
+                            </div>
+                            <div class="input-group">
+                                <input placeholder="" style="display: none;" type="file" accept=".py,.c,.cpp,.java,.txt" name="solution" id="edit_solution" autocomplete="off" class="input" />
+                                <button class="upload-solution" onclick="document.getElementById('edit_solution').click()" type="button">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 3H12H8C6.34315 3 5 4.34315 5 6V18C5 19.6569 6.34315 21 8 21H11M13.5 3L19 8.625M13.5 3V7.625C13.5 8.17728 13.9477 8.625 14.5 8.625H19M19 8.625V11.8125" stroke="#fffffff" stroke-width="2"></path>
+                                        <path d="M17 15V18M17 21V18M17 18H14M17 18H20" stroke="#fffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                    </svg>
+                                    Solution
+                                </button>
+                                <span id="edit_filename">No file chosen</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="image-details">
+                        <div class="upload">
+                            <div class="preview-img-div" onclick="document.getElementById('edit_files').click()">
+                                <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512" class="upload-add">
+                                    <path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32V224H48c-17.7 0-32 14.3-32 32s14.3 32 32 32H192V432c0 17.7 14.3 32 32 32s32-14.3 32-32V288H400c17.7 0 32-14.3 32-32s-14.3-32-32-32H256V80z"/>
+                                </svg>
+                                <span>Upload</span>
+                                <img id="edit_que_image" class="preview-img"/>
+                            </div>
+                            <input placeholder="" accept="image/*" type="file" name="que_img" id="edit_files" style="display: none;"/>
+                        </div>
+                        <input placeholder="" type="file" name="input_cases" id="edit_input_cases" value="" hidden="">
+                        <input placeholder="" type="file" name="output_cases" id="edit_output_cases" value="" hidden="">
+                        
+                        <input type="hidden" value="" name="que_id" id="edit_que_id"/>
+                        
+                        <input type="hidden" name="contest_code" value="{{ contest_code }}"/>
+                        <input type="hidden" name="contest_type" value="{{ contest_type }}"/>
+                        
+                        <button class="btn" type="submit">
+                            Submit
+                        </button>
+                    </div>
+                <!--</div>-->
+            </form>
+        </div>
+        
+
+        <div class="contest" style="justify-content: flex-start; width: max(70%, calc(100% - 300px)); position: absolute; top: 0; right: -100%; background-color: #fff; height: 100%;" id="showquestion">
+            <div style="display: flex; width: 100%; justify-content: space-between; padding: 10px;">
+                <button class="btn question-btn" onclick="closeAllQuestions()">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512">
+                        <path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.2 288 416 288c17.7 0 32-14.3 32-32s-14.3-32-32-32l-306.7 0L214.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/>
+                    </svg>
+                    &nbsp;Back
+                </button>
+            </div>
+            <div class="publish-head">
+                <h2><b>Question</b></h2>
+                <hr width="100%">
+            </div>
+            <div class="question-list-items scrollhide" style="flex-direction: row; height: clac(100% - 80px);">
+                <div class="text-details" style="justify-content: flex-start; align-items: flex-start; margin-left: 20px;">
+                    <div class="flex-display" style="height: fit-content; margin: 20px 5px;">
+                        <h3>Question Title :&nbsp;</h3>
+                        <span style="font-size: 1.3rem;" id="view_title"></span>
+                    </div>
+                    <div class="flex-display" style="height: fit-content; margin: 20px 5px;">
+                        <h3>Difficulty Level :&nbsp;</h3>
+                        <span style="font-size: 1.3rem;" id="view_level"></span>
+                    </div>
+                    <div class="flex-display" style="height: fit-content; margin: 20px 5px; width: 100%; flex-direction: column; align-items: flex-start;">
+                        <h3>Description :&nbsp;</h3>
+                        <textarea id="view_que_desc" style="height: 250px; max-height: 400px; overflow: scroll; width: min(100%, 500px); resize: none;" disabled></textarea>
+                    </div>
+                    <div class="flex-display" style="height: fit-content; margin: 20px 5px; width: 100%; flex-direction: column; align-items: flex-start;">
+                        <h3>Solution :&nbsp;</h3>
+                        <textarea id="view_solution" style="height: 250px; max-height: 400px; overflow: scroll; width: min(100%, 500px); resize: none;text-wrap:nowrap;" disabled></textarea>
+                    </div>
+                    <div id="view_testcases" class="flex-display" style="width: 100%;flex-direction:column;">
+                        
+                    </div>
+                </div>
+                <div class="image-details">
+                    <div class="upload">
+                        <div class="preview-img-div">
+                            <span>Image</span>
+                            <img id="view_que_image" class="preview-img" src=""/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button class="btn" type="submit" style="margin: 5px;" onclick="showEditQuestion()">
+                Edit Question
+            </button>
+        </div>
+    </div>
+</body>
+<script>
+    
+    function get_que_data(que_id, typ)
+    {
+        serialized_data = "que_id=" + que_id + "&sub_type=" + String(typ) + "&contest_code" + '{{ contest_code }}' + "&contest_type" + '{{ contest_type }}' + "&csrfmiddlewaretoken=" + '{{ csrf_token }}';
+        $.ajax({
+            type: "POST",
+            data: serialized_data,
+            url: "/codespace/get_que_data/",
+            success: function(req){
+                if (typ==0)
+                {
+                    //VIEW QUE
+                    document.getElementById("view_title").innerHTML = req["title"];
+                    document.getElementById("view_level").innerHTML = req["level"];
+                    document.getElementById("view_que_desc").innerHTML = req["que_desc"];
+                    document.getElementById("view_solution").innerHTML = req["solution"];
+                    document.getElementById("view_que_image").src = req["que_img"];
+                    setViewTestCases({'inputs': req["inputs"], 'outputs': req["outputs"]});
+                }
+                else if (typ == 1)
+                {
+                    //EDIT QUE
+                    document.getElementById("edit_title_parent").innerHTML = `<input placeholder="" required="" type="text" name="title" id="edit_title" autocomplete="off" class="input" value="${req["title"]}">
+                                <label class="user-label">Title</label>`;
+                    document.getElementById("edit_"+req["level"]).checked = true;
+                    document.getElementById("edit_que_desc_parent").innerHTML = `<textarea placeholder="" required="" type="text" name="que_desc" id="edit_que_desc" autocomplete="off" class="input  scrollhide">${req["que_desc"]}</textarea>
+                                <label class="user-label">Description</label>`;
+                    document.getElementById("edit_score_parent").innerHTML = `<input placeholder="" required="" type="number" name="score" id="edit_score" autocomplete="off" class="input" min="0" value="${req["score"]}">
+                                <label class="user-label">Score</label>`;
+                    document.getElementById("edit_tle_parent").innerHTML = `<input placeholder="" required="" type="text" name="tle" id="edit_tle" autocomplete="off" class="input" min="0" value="${req["tle"]}">
+                                <label class="user-label">TLE</label>`;
+                    document.getElementById("edit_filename").innerHTML = req["solution"];
+                    document.getElementById("edit_que_image").src = req["que_img"];
+                    document.getElementById("edit_que_type").value = req["que_type"];
+                    setTestCases({'inputs': req["inputs"], 'outputs': req["outputs"]});
+                }
+            },
+            error: function(req){
+                
+            },
+        });
+    }
+    
+    function setViewTestCases(testcases)
+    {
+        let inputs = testcases['inputs'];
+        let outputs = testcases['outputs'];
+        let view_testcases = document.getElementById('view_testcases');
+        view_testcases.innerHTML = "";
+        for(let i=0; i<inputs.length; i++)
+        {
+            view_testcases.innerHTML += `<div class="flex-display">
+                        <div class="flex-display" style="height: fit-content; margin: 5px 20px; width: 100%; flex-direction: column; align-items: flex-start;">
+                            <h3>Input :&nbsp;${i}</h3>
+                            <textarea style="height: 150px; max-height: 400px; overflow: scroll; width: min(100%, 500px); resize: none;text-wrap:nowrap;" disabled>${inputs[i]}</textarea>
+                        </div>
+                        <div class="flex-display" style="height: fit-content; margin: 5px 20px; width: 100%; flex-direction: column; align-items: flex-start;">
+                            <h3>Output :&nbsp;${i}</h3>
+                            <textarea style="height: 150px; max-height: 400px; overflow: scroll; width: min(100%, 500px); resize: none;text-wrap:nowrap;" disabled>${outputs[i]}</textarea>
+                        </div>
+                        </div>`;
+                        
+        }
+        
+    }
+    
+    function setTestCases(testcases){ //testcases = {'inputs' : [1, 2, 3, 4], 'outputs' : ['a', 'b', 'c', 'd']}
+        let inputs = testcases['inputs'];
+        let outputs = testcases['outputs'];
+        let testcases_div = document.getElementById('edit-testcases');
+        testcases_div.innerHTML = `<div class="testcase edit_testcase">
+                                        <div class="input-group description-test">
+                                            <textarea id="edit-sampleinput" placeholder="" required="" type="text" name="description" autocomplete="off" class="input  scrollhide">${inputs[0]}</textarea>
+                                            <label class="user-label">Sample Input</label>
+                                        </div>
+                                        <div class="input-group description-test">
+                                            <textarea id="edit-sampleoutput" placeholder="" required="" type="text" name="description" autocomplete="off" class="input  scrollhide">${outputs[0]}</textarea>
+                                            <label class="user-label">Sample Output</label>
+                                        </div>
+                                    </div>
+                                    <li>
+                                        <div class="testcase edit_testcase">
+                                            <div class="input-group description-test">
+                                                <textarea id="edit-tc-in1" placeholder="" required="" type="text" name="description" autocomplete="off" class="input  scrollhide">${inputs[1]}</textarea>
+                                                <label class="user-label">Input</label>
+                                            </div>
+                                            <div class="input-group description-test">
+                                                <textarea id="edit-tc-out1" placeholder="" required="" type="text" name="description" autocomplete="off" class="input  scrollhide">${outputs[1]}</textarea>
+                                                <label class="user-label">Output</label>
+                                            </div>
+                                        </div>
+                                    </li>`;
+        for(let i=2; i<inputs.length; i++){
+            let testcase = document.createElement('li');
+            testcase.innerHTML = `<div class="testcase edit_testcase">
+                                    <div class="input-group description-test">
+                                        <textarea placeholder="" required="" type="text" name="description" autocomplete="off" class="input  scrollhide">${inputs[i]}</textarea>
+                                        <label class="user-label">Input</label>
+                                    </div>
+                                    <div class="input-group description-test">
+                                        <textarea placeholder="" required="" type="text" name="description" autocomplete="off" class="input  scrollhide">${outputs[i]}</textarea>
+                                        <label class="user-label">Output</label>
+                                    </div>
+                                    <button class="btn question-btn color-red" style="font-size: 0.8rem;" onclick="this.parentElement.parentElement.remove()">x</button>
+                                </div>`;
+            testcases_div.appendChild(testcase);
+        }
+    }
+
+    let testcase_count = 1;
+
+    document.getElementById('files').onchange = function () {
+        var src = URL.createObjectURL(this.files[0]);
+        console.log(this.files[0].name);
+        document.getElementById('edit_que_image').src = src;
+    }
+
+    document.getElementById('solution').onchange = function () {
+        document.getElementById('filename').innerHTML = this.files[0].name;
+    }
+    
+    document.getElementById('edit_files').onchange = function () {
+        var src = URL.createObjectURL(this.files[0]);
+        console.log(this.files[0].name);
+        document.getElementById('edit_que_image').src = src;
+    }
+
+    document.getElementById('edit_solution').onchange = function () {
+        document.getElementById('edit_filename').innerHTML = this.files[0].name;
+    }
+
+    function addTeastcase(sub_type){
+        let testcases = document.getElementById(sub_type+'-testcases');
+        let testcase = document.createElement('li');
+        testcase.innerHTML = `<div class="testcase ${sub_type}_testcase">
+                                <div class="input-group description-test">
+                                    <textarea placeholder="" required="" type="text" name="description" autocomplete="off" class="input  scrollhide"></textarea>
+                                    <label class="user-label">Input</label>
+                                </div>
+                                <div class="input-group description-test">
+                                    <textarea placeholder="" required="" type="text" name="description" autocomplete="off" class="input  scrollhide"></textarea>
+                                    <label class="user-label">Output</label>
+                                </div>
+                                <button class="btn question-btn color-red" style="font-size: 0.8rem;" onclick="this.parentElement.parentElement.remove()">x</button>
+                            </div>`;
+        testcases.appendChild(testcase);
+    }
+    
+    function serializeTestcase(sub_type){
+        let inputserial = "";
+        let outputserial = "";
+        let testcases = document.getElementsByClassName(sub_type+'_testcase');
+        for(let i=0; i<testcases.length; i++){
+            let inputs = testcases[i].getElementsByTagName('textarea')[0].value;
+            let outputs = testcases[i].getElementsByTagName('textarea')[1].value;
+            inputserial += inputs;
+            outputserial += outputs;
+            if (i!=testcases.length-1)
+            {
+                inputserial += "\n@dlim@\n";
+                outputserial += "\n@dlim@\n";
+            }
+            
+        }
+        // alert(inputserial);
+        
+        // document.getElementById('input_cases').value = inputserial;
+        // document.getElementById('output_cases').value = outputserial;
+        
+        // const formData = new FormData(document.getElementById('add_que_form'));
+        // const blob1 = new Blob([inputserial], { type: 'plain/text' });
+        // formData.append('input_cases', blob1, 'input_cases.txt')
+        // const blob2 = new Blob([outputserial], { type: 'plain/text' });
+        // formData.append('output_cases', blob2, 'output_cases.txt');
+        
+        // Get a reference to our file input
+        
+        const fileInput = document.getElementById(sub_type + '_input_cases');
+        const fileOutput = document.getElementById(sub_type + '_output_cases');
+        document.getElementById(sub_type + '_tc_count').value = testcases.length;
+        // Create a new File object
+        const myFile1 = new File([inputserial], 'input_cases.txt', {
+            type: 'text/plain',
+            lastModified: new Date(),
+        });
+        
+        const myFile2 = new File([outputserial], 'output_cases.txt', {
+            type: 'text/plain',
+            lastModified: new Date(),
+        });
+    
+        // Now let's create a FileList
+        const dataTransfer1 = new DataTransfer();
+        dataTransfer1.items.add(myFile1);
+        fileInput.files = dataTransfer1.files;
+        
+        const dataTransfer2 = new DataTransfer();
+        dataTransfer2.items.add(myFile2);
+        fileOutput.files = dataTransfer2.files;
+    
+        // Help Safari out
+        if (fileInput.webkitEntries.length) {
+            fileInput.dataset.file = `${dataTransfer1.files[0].name}`;
+        }
+        
+        if (fileOutput.webkitEntries.length) {
+            fileOutput.dataset.file = `${dataTransfer2.files[0].name}`;
+        }
+        
+        return false;
+    }
+    
+    function showAddQuestion(){
+        document.getElementById('addquestion-div').style.right = "0";
+        document.getElementById('addquestion-div').style.transition = "0.5s";
+        document.getElementById('editquestion').style.right = "-100%";
+        document.getElementById('editquestion').style.transition = "0.5s";
+        document.getElementById('showquestion').style.right = "-100%";
+        document.getElementById('showquestion').style.transition = "0.5s";
+    }
+
+    function showEditQuestion(){
+        let que_id = document.getElementById("edit_que_id").value;
+        get_que_data(que_id, 1);
+        document.getElementById('editquestion').style.right = "0";
+        document.getElementById('editquestion').style.transition = "0.5s";
+        document.getElementById('addquestion-div').style.right = "-100%";
+        document.getElementById('addquestion-div').style.transition = "0.5s";
+        document.getElementById('showquestion').style.right = "-100%";
+        document.getElementById('showquestion').style.transition = "0.5s";
+    }
+
+    // showAddQuestion();
+
+    function showQuestion(que_id){
+        get_que_data(que_id, 0);
+        document.getElementById("edit_que_id").value = que_id;
+        document.getElementById('showquestion').style.right = "0";
+        document.getElementById('showquestion').style.transition = "0.5s";
+        document.getElementById('editquestion').style.right = "-100%";
+        document.getElementById('editquestion').style.transition = "0.5s";
+        document.getElementById('addquestion-div').style.right = "-100%";
+        document.getElementById('addquestion-div').style.transition = "0.5s";
+    }
+
+    function closeAllQuestions(){
+        document.getElementById('showquestion').style.right = "-100%";
+        document.getElementById('showquestion').style.transition = "0.5s";
+        document.getElementById('editquestion').style.right = "-100%";
+        document.getElementById('editquestion').style.transition = "0.5s";
+        document.getElementById('addquestion-div').style.right = "-100%";
+        document.getElementById('addquestion-div').style.transition = "0.5s";
+    }
+
+    document.querySelectorAll('input[name="question_type"]').forEach(function(input) {
+        input.addEventListener('change', function() {
+            let addquestion = document.getElementById('add_code_form');
+            let addmcq = document.getElementById('add_mcq_form');
+            let adddebug = document.getElementById('add_debug_options');
+            let type = this.value;
+            if (type == 'coding') {
+                addquestion.style.transition = "0.5s";
+                addquestion.style.transform = "translateX(0)";
+                addmcq.style.transition = "0.5s";
+                addmcq.style.transform = "translateX(100%)";
+                adddebug.style.display = "none";
+                adddebug.children[0].children[0].required = false;
+                adddebug.children[0].children[0].value = '';
+                adddebug.children[1].children[0].required = false;
+                adddebug.children[1].children[0].value = '';
+                document.getElementById('add_que_type').value = 0;
+            } else if (type == 'mcq') {
+                addquestion.style.transition = "0.5s";
+                addquestion.style.transform = "translateX(100%)";
+                addmcq.style.transition = "0.5s";
+                addmcq.style.transform = "translateX(0)";
+                document.getElementById('add_que_type').value = 1;
+            } else if (type == 'debuging') {
+                addquestion.style.transition = "0.5s";
+                addquestion.style.transform = "translateX(0)";
+                addmcq.style.transition = "0.5s";
+                addmcq.style.transform = "translateX(100%)";
+                adddebug.style.display = "block";
+                adddebug.children[0].children[0].required = true;
+                adddebug.children[1].children[0].required = true;
+                document.getElementById('add_que_type').value = 2;
+            }
+        });
+    });
+
+
+    let option_count = 2;
+    
+    function addOption(){
+        option_count += 1;
+        let testcases = document.getElementById('mcqoptions');
+        let testcase = document.createElement('li');
+        testcase.innerHTML = `<div class="mcq-option" style="justify-content: space-between; align-items: center;">
+                                <input type="radio" name="correct_op" value="` + option_count + `">
+                                <div class="flex-display" style="width: 100%;">
+                                    <div class="circle" onclick='this.parentElement.parentElement.children[0].checked=true'>
+                                        <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512">
+                                            <path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM369 209L241 337c-9.4 9.4-24.6 9.4-33.9 0l-64-64c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l47 47L335 175c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9z"/>
+                                        </svg>
+                                    </div>
+                                    <textarea placeholder="Option Answer" autocomplete="off" class="input  scrollhide" required></textarea>
+                                </div>
+                                <button class="btn question-btn color-red" style="font-size: 0.8rem; width: 40px;" onclick="this.parentElement.parentElement.remove()">x</button>
+                            </div>`;
+        testcases.appendChild(testcase);
+    }
+
+    function serializeOption(){
+        let options_serial = "";
+        let testcases = document.getElementsByClassName('mcq-option');
+        for(let i=0; i<testcases.length; i++){
+            let option = testcases[i].getElementsByTagName('textarea')[0].value;
+            options_serial += option;
+            if (i!=testcases.length-1)
+            {
+                options_serial += "\n@dlim@\n";
+            }
+        }
+        document.getElementById('options').value = options_serial;
+        let checked = document.querySelector('input[name="correct_op"]:checked');
+        let inputs = document.querySelectorAll('input[name="correct_op"]');
+        if(!checked){
+            alert("Please select a correct option");
+            return false;
+        }
+        for(i=0; i<inputs.length; i++) {
+            if(inputs[i].value == checked.value){
+                document.getElementById('selected_op').value = i+1;
+            }
+        }
+    }
+    
+    //setInterval(() => window.location.reload(), 3000);
+</script>
+</html>

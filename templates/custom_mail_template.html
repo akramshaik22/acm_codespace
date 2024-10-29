@@ -1,0 +1,111 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Mail</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="icon" type="image/x-icon" href="{% static 'images/acmcodespace_ele.png' %}">
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <style>
+        .ql-toolbar{
+            width: min(100%, 500px);
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="logo">
+            <img src="{% static 'images/ACM_Codespace_logo.png' %}" class="logo" alt="logo">
+        </div>
+        <div class="authorize">
+            <a href="/codespace/admin_logout" class="link" style="margin-right:20px;">Logout</a>
+        </div>
+    </nav>
+    <div class="main-body">
+        <div class="about admin-about">
+            <div class="flex-display user-info">
+                <img src="{% static 'images/profile.jpeg' %}" alt="user profile pic" class="user-profile-pic">
+                <h2>{{ user.get_full_name }}</h2>
+                <span>{{ user.username }}</span>
+            </div>
+            <div class="flex-display other-info">
+                <h2>Contests</h2>
+                <span><a href="/codespace/admin_contests/ongoing/" class="link">Ongoing</a></span>
+                <span><a href="/codespace/admin_contests/published/" class="link">Published</a></span>
+                <span><a href="/codespace/admin_contests/drafts/" class="link">Drafts</a></span>
+                <span><a href="/codespace/admin_contests/past/" class="link">Past</a></span>
+                {% if is_superadmin %}
+                <span><a href="/codespace/super_admin/admins/" class="link">Admins</a></span>
+                {% endif %}
+            </div>
+        </div>
+        <div class="contest" style="justify-content: flex-start; width: max(70%, calc(100% - 300px));">
+            <div style="display: flex; width: 100%; justify-content: space-between; padding: 10px;">
+                <a class="btn question-btn link">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512">
+                        <path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.2 288 416 288c17.7 0 32-14.3 32-32s-14.3-32-32-32l-306.7 0L214.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/>
+                    </svg>
+                    &nbsp;Back
+                </a>
+                <div class="flex-display">
+                    <select id="contest" style="margin: 5px; height: 30px; width: 150px;">
+                        <option selected value="" disabled>select Target users</option>
+                        <option value="all_users">all users</option>
+                        {% for i in contests %}
+                            <option value="{{ i.contest_code }}">{{ i.title }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="publish-head">
+                <h2><b>Custon Mail</b></h2>
+                <hr width="100%">
+            </div>
+            <div class="question-list-items scrollhide" style="flex-direction: row;">
+                <div class="flex-display scrollhide" style="overflow-y: scroll; overflow-x: hidden; width: calc(100% - 20px); height: calc(100% - 20px); flex-direction: column;">
+                    <div class="input-group">
+                        <input placeholder="" required="" type="text" name="subject" autocomplete="off" class="input" id="subject">
+                        <label class="user-label">Subject</label>
+                    </div>
+                    <div id="template-editor" style="width: min(100%, 500px);"></div>
+                </div>
+                </div>
+                    <button class="btn" onclick="serializeTestcase()">
+                        Submit
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script>
+    var quill = new Quill('#template-editor', {
+        theme: 'snow'
+    });
+
+    function serializeTestcase(){
+        let subject = document.getElementById('subject').value;
+        let content = `<html><body>${quill.root.innerHTML}</body></html>`;
+        let contest = document.getElementById('contest').value;
+        if(subject == '' || content == '' || contest == ''){
+            alert('Please fill all the fields');
+            return;
+        }
+        $.ajax({
+            type: 'POST',
+            url: '/codespace/admin_contests/send_custom_mails/',
+            data: `subject=${encodeURIComponent(subject)}&email_content=${encodeURIComponent(content)}&contest_code=${contest}&csrfmiddlewaretoken={{csrf_token}}`,
+            success: function(response){
+                alert('Mail sent successfully');
+            },
+            error: function(response){
+                alert('Mail not sent');
+            }
+        });
+    }
+</script>
+</html>

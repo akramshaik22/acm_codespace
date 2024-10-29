@@ -1,0 +1,245 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Codespace</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="icon" type="image/x-icon" href="{% static 'images/acmcodespace_ele.png' %}">
+</head>
+<body>
+    <nav>
+        <div class="logo">
+            <img src="{% static 'images/ACM_Codespace_logo.png' %}" class="logo" alt="logo">
+            <div class="mobile-nav-container">
+                <span class="vertical-line"></span>
+                <div class="nav-but close-nav" id="nav-but">
+                    <span style="--i: 0" class="nav-more"></span>
+                    <span style="--i: 1" class="nav-more"></span>
+                    <span style="--i: 2" class="nav-more"></span>
+                </div>
+            </div>
+        </div>
+        <ul class="nav-links">
+            <li><a href="/codespace">Home</a></li>
+            <li><a href="/codespace/practice">Practice</a></li>
+            <li><a class="active-link">Contests</a></li>
+        </ul>
+        <ul class="mobile-nav-links nav-links close-mobile-nav" id="mobile-nav-options">
+            <li><a href="/codespace">Home</a></li>
+            <li><a href="/codespace/practice">Practice</a></li>
+            <li><a class="active-link">Contests</a></li>
+        </ul>
+        {% if username %}
+            <div class="authorize">
+                {{ username }}
+                {% if profileUrl %}
+                <img src=".{{ profileUrl }}" class="profile-img" alt="profile-img">
+                {% else %}
+                <img src="{% static 'images/profile.jpeg' %}" class="profile-img" alt="profile">
+                {% endif %}
+                <ul>
+                    <li><a href="/codespace/profile/{{ username }}">Profile</a></li>
+                    <li><a href="user_logout">Logout</a></li>
+                </ul>
+            </div>
+        {% else %}
+            <div class="authorize">
+                <a href="/codespace/user_login">Login</a>
+                <a href="/codespace/user_registration">Register</a>
+            </div>
+        {% endif %}
+    </nav>
+    <div class="main-body" style="height: calc(100vh - 100px);">
+        <div class="content flex-display scrollhide">
+            <div class="publish-head">
+                <hr width="100%">
+                <h1 style="align-self:flex-start; margin: 10px 40px;">Ongoing</h1>
+                <hr width="100%">
+            </div>
+            {% if ongoing %}
+                {% for i in ongoing %}
+                    <div class="flex-display contest-info">
+                        <img src=".{{ i.poster.url }}" alt="poster image" class="contest-info-img">
+                        <div class="contest-desc flex-display">
+                            <span><strong>{{ i.title }}</strong></span>
+                            <span><strong>Venue</strong> : {{ i.venue }}</span>
+                            <span><strong>Duration</strong> : {{ i.time }} min</span>
+                            <span><strong>Start Date</strong> : {{ i.start_date }}</span>
+                            <span><strong>End Date</strong> : {{ i.end_date }}</span>
+                            <!--<pre style="text-wrap:wrap;">{{ i.description }}</pre>-->
+                            <a class="btn link" href="/codespace/contests/{{ i.contest_code }}" style="font-weight: bold; background-color: #26D2AD; padding: 5px 10px; width: auto;">Contest Details</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="flex-display"> No Contest </div>
+            {% endif %}
+            <div class="publish-head">
+                <hr width="100%">
+                <h1 style="align-self:flex-start; margin: 10px 40px;">Upcoming</h1>
+                <hr width="100%">
+            </div>
+            {% if upcoming %}
+                {% for i in upcoming %}
+                    <div class="flex-display contest-info">
+                        <img src=".{{ i.poster.url }}" alt="poster image" class="contest-info-img">
+                        <div class="contest-desc flex-display">
+                            <span><strong>{{ i.title }}</strong></span>
+                            <span><strong>Venue</strong> : {{ i.venue }}</span>
+                            <span><strong>Duration</strong> : {{ i.time }} min</span>
+                            <span><strong>Start Date</strong> : {{ i.start_date }}</span>
+                            <span><strong>End Date</strong> : {{ i.end_date }}</span>
+                            <!--<pre style="text-wrap:wrap;">{{ i.description }}</pre>-->
+                            {% if i.id in reg_list %}
+                            <a class="btn" style="font-weight: bold; color: #000; text-decoration: none; background-color: #26D2AD; cursor: not-allowed; width: fit-content; padding: 5px 10px;">Registered</a>
+                            {% endif %}
+                            <a class="btn link" href="/codespace/contests/{{ i.contest_code }}" style="font-weight: bold; background-color: #26D2AD; padding: 5px 10px; width: auto;">Contest Details</a>
+                            <a style="font-weight: bold; width: auto; padding: 5px 10px;"><b>Start's in : </b><span class="contest-remain-time" style="color: #FF914D;">{{ i.time_rem }}</span></a>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="flex-display"> No Contest </div>
+            {% endif %}
+            <div class="publish-head">
+                <hr width="100%">
+                <h1 style="align-self:flex-start; margin: 10px 40px;">Past</h1>
+                <hr width="100%">
+            </div>
+            {% if past %}
+                {% for i in past %}
+                    <div class="flex-display contest-info">
+                        <img src=".{{ i.poster.url }}" alt="poster image" class="contest-info-img">
+                        <div class="contest-desc flex-display">
+                            <span><strong>{{ i.title }}</strong></span>
+                            <div class="flex-display" style="height: fit-content; width: 100%; justify-content: space-around;">
+                                <span><strong>Venue</strong> : {{ i.venue }}</span>
+                                <span><strong>Duration</strong> : {{ i.time }} min</span>
+                            </div>
+                            {% if i.winner %}
+                                <span><strong>Winner</strong> : {{ i.winner.fname }} {{ i.winner.lname }}(<a target="_blank" href="/codespace/profile/{{ i.winner.username }}">{{ i.winner.username }}</a>)</span>
+                                {% if i.runner %}
+                                    <span><strong>Runner</strong> : {{ i.runner.fname }} {{ i.runner.lname }}(<a target="_blank" href="/codespace/profile/{{ i.runner.username }}">{{ i.runner.username }}</a>)</span>
+                                {% endif %}
+                            {% else %}
+                                <span><strong>Winner</strong> : ----</span>
+                                <span><strong>Runner</strong> : ----</span>
+                            {% endif %}
+                            <span><strong>Participant count</strong> : {{ i.total_participants }}</span>
+                            <span><strong>Start Date</strong> : {{ i.start_date }}</span>
+                            <span><strong>End Date</strong> : {{ i.end_date }}</span>
+                            <!--<pre style="text-wrap:wrap;">{{ i.description }}</pre>-->
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="flex-display"> No Contest </div>
+            {% endif %}
+        </div>
+        <div class="refresh-div" id="refresh-text">
+            <span>Page refresh in <span id="refresh-time">30</span>s</span>
+        </div>
+    </div>
+    <footer>
+        <p>&copy; copy rights reserved for <a href="https://gmritchapter.acm.org" class="link" target="_blank"><strong>ACM GMRIT</strong></a></p>
+        <p>Developed by <a href="https://bhargavratnala.github.io" class="link" target="_blank"><strong>Bhargav Ratnala</strong></a> & <a href="https://akramshaik22.github.io" class="link" target="_blank"><strong>Akram Shaik</strong></a> (2021-25)</p>
+    </footer>
+</body>
+<script>
+
+    let contesttime = document.querySelectorAll('.contest-remain-time');
+    
+    let refreshtime = 30;
+    let flag = false;
+    function refreshPage(){
+        if(flag){
+            return;
+        }
+        flag = true;
+        document.getElementById('refresh-text').style.display = 'block';
+        let refreshtimer = document.getElementById('refresh-time');
+        setInterval(()=>{
+            if(refreshtime == 0){
+                window.location.reload();
+            }
+            else{
+                refreshtime--;
+                refreshtimer.innerHTML = refreshtime;
+            }
+        }, 1000);
+    }
+    
+    contesttime.forEach(contest => {
+        let timeString = contest.innerHTML;
+        let days = 0;
+        let time = timeString;
+        if(timeString.startsWith('-')){
+            contest.innerHTML = `Waiting for Host to start the contest`;
+            refreshPage();
+            return;
+        }
+        if (timeString.includes('days')) {
+            const [, daysMatch, timeMatch] = timeString.match(/(\d+) days, (.+)/);
+            days = parseInt(daysMatch);
+            time = timeMatch;
+        }
+        else if (timeString.includes('day')) {
+            const [, daysMatch, timeMatch] = timeString.match(/(\d+) day, (.+)/);
+            days = parseInt(daysMatch);
+            time = timeMatch;
+        }
+    
+        // Split the time string into hours, minutes, seconds, and milliseconds
+        const [hours, minutes, seconds] = time.split(':');
+    
+        // Calculate the total seconds (including milliseconds)
+        let totalSeconds = days * 24 * 60 * 60; // Days to seconds
+        totalSeconds += parseInt(hours) * 60 * 60; // Hours to seconds
+        totalSeconds += parseInt(minutes) * 60; // Minutes to seconds
+    
+        // If there are milliseconds, parse them and add to totalSeconds
+        if (seconds.includes('.')) {
+            const [secondsPart, millisecondsPart] = seconds.split('.');
+            totalSeconds += parseInt(secondsPart);
+            // totalSeconds += parseFloat(`0.${millisecondsPart}`);
+        } else {
+            totalSeconds += parseInt(seconds);
+        }
+    
+        let interval = setInterval(() => {
+            totalSeconds--;
+    
+            if (totalSeconds <= 0) {
+                contest.innerHTML = `Waiting for Host to start the contest`;
+                refreshPage();
+                clearInterval(interval);
+            } else {
+                let days = Math.floor(totalSeconds / (24 * 60 * 60));
+                let hours = Math.floor((totalSeconds % (24 * 60 * 60)) / 3600);
+                let minutes = Math.floor((totalSeconds % 3600) / 60);
+                let seconds = totalSeconds % 60;
+    
+                // Create the countdown timer string with or without "days"
+                let timerString = "";
+                if (days > 0) {
+                    timerString += `${days} day${days > 1 ? 's' : ''} `;
+                }
+                timerString += `${hours}h:${minutes}m:${seconds}s`;
+    
+                contest.innerHTML = `${timerString}`;
+            }
+        }, 1000);
+    });
+
+</script>
+<script>
+    const navBut = document.getElementById('nav-but');
+    const mobileNavOptions = document.getElementById('mobile-nav-options');
+    navBut.addEventListener('click', () => {
+        navBut.classList.toggle('close-nav');
+        mobileNavOptions.classList.toggle('close-mobile-nav');
+    });
+</script>
+</html>

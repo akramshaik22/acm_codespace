@@ -1,0 +1,339 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Codespace</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="icon" type="image/x-icon" href="{% static 'images/acmcodespace_ele.png' %}">
+</head>
+<body>
+    <nav>
+        <div class="flex-display">
+            <div class="logo">
+                <img src="{% static 'images/ACM_Codespace_logo.png' %}" class="logo" alt="logo">
+            </div>
+            <span class="vertical-line"></span>
+            <button class="question-btn flex-display" onclick="toggleQuestionDiv()">
+                <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512">
+                    <path d="M40 48C26.7 48 16 58.7 16 72v48c0 13.3 10.7 24 24 24H88c13.3 0 24-10.7 24-24V72c0-13.3-10.7-24-24-24H40zM192 64c-17.7 0-32 14.3-32 32s14.3 32 32 32H480c17.7 0 32-14.3 32-32s-14.3-32-32-32H192zm0 160c-17.7 0-32 14.3-32 32s14.3 32 32 32H480c17.7 0 32-14.3 32-32s-14.3-32-32-32H192zm0 160c-17.7 0-32 14.3-32 32s14.3 32 32 32H480c17.7 0 32-14.3 32-32s-14.3-32-32-32H192zM16 232v48c0 13.3 10.7 24 24 24H88c13.3 0 24-10.7 24-24V232c0-13.3-10.7-24-24-24H40c-13.3 0-24 10.7-24 24zM40 368c-13.3 0-24 10.7-24 24v48c0 13.3 10.7 24 24 24H88c13.3 0 24-10.7 24-24V392c0-13.3-10.7-24-24-24H40z"/>
+                </svg>
+                &nbsp;&nbsp;Questions (3/10)
+            </button>
+        </div>
+        <span class="timer" id="timer">00 : 00 : 00</span>
+        <div class="flex-display">
+            <span class="username">username</span>
+            <span class="vertical-line"></span>
+            <button class="btn" onclick="() => {
+                localStorage.removeItem('timer');
+                window.location.replace = 'testend';
+            }" id="endtest">End Test</button>
+        </div>
+    </nav>
+    <div class="main-body question-list" id="question-list-div">
+        <button class="btn question-btn" onclick="toggleQuestionDiv()">
+            <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512">
+                <path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.2 288 416 288c17.7 0 32-14.3 32-32s-14.3-32-32-32l-306.7 0L214.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/>
+            </svg>
+            &nbsp;Back
+        </button>
+        <div class="head">
+            <h2><b>Problems</b></h2>
+            <div>
+                <span>3 Questions</span>
+                <span class="vertical-line"></span>
+                <span>Total Marks : 300</span>
+            </div>
+        </div>
+        <div class="question-list-items scrollhide" id="question-list">
+            <div class="question-card">
+                <div class="question-details">
+                    <h2>1. Fibanocci Number</h2>
+                    <span>Easy</span>
+                </div>
+                <div class="question-status">
+                    <span class="score">Score : 100</span>
+                    <div class="question-details" style="align-items: center;">
+                        <button class="slove-question" onclick="toggleQuestionDiv()">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512">
+                                <path d="M438.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L338.8 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l306.7 0L233.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160z"/>
+                            </svg>
+                        </button>
+                        <span class="sloved">sloved</span>
+                    </div>
+                </div>
+            </div>
+            <div class="question-card">
+                <div class="question-details">
+                    <h2>1. Fibanocci Number</h2>
+                    <span>Easy</span>
+                </div>
+                <div class="question-status">
+                    <span class="score">Score : 100</span>
+                    <div class="question-details" style="align-items: center;">
+                        <button class="slove-question">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512">
+                                <path d="M438.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L338.8 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l306.7 0L233.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160z"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="question-card">
+                <div class="question-details">
+                    <h2>1. Fibanocci Number</h2>
+                    <span>Easy</span>
+                </div>
+                <div class="question-status">
+                    <span class="score">Score : 100</span>
+                    <div class="question-details" style="align-items: center;">
+                        <button class="slove-question">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512">
+                                <path d="M438.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L338.8 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l306.7 0L233.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160z"/>
+                            </svg>
+                        </button>
+                        <span class="sloved">sloved</span>
+                    </div>
+                </div>
+            </div>
+            <div class="question-card">
+                <div class="question-details">
+                    <h2>1. Fibanocci Number</h2>
+                    <span>Easy</span>
+                </div>
+                <div class="question-status">
+                    <span class="score">Score : 100</span>
+                    <div class="question-details" style="align-items: center;">
+                        <button class="slove-question">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512">
+                                <path d="M438.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L338.8 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l306.7 0L233.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160z"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="question-card">
+                <div class="question-details">
+                    <h2>1. Fibanocci Number</h2>
+                    <span>Easy</span>
+                </div>
+                <div class="question-status">
+                    <span class="score">Score : 100</span>
+                    <div class="question-details" style="align-items: center;">
+                        <button class="slove-question">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512">
+                                <path d="M438.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L338.8 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l306.7 0L233.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160z"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="question-card">
+                <div class="question-details">
+                    <h2>1. Fibanocci Number</h2>
+                    <span>Easy</span>
+                </div>
+                <div class="question-status">
+                    <span class="score">Score : 100</span>
+                    <div class="question-details" style="align-items: center;">
+                        <button class="slove-question">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512">
+                                <path d="M438.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L338.8 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l306.7 0L233.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160z"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="question-card">
+                <div class="question-details">
+                    <h2>1. Fibanocci Number</h2>
+                    <span>Easy</span>
+                </div>
+                <div class="question-status">
+                    <span class="score">Score : 100</span>
+                    <div class="question-details" style="align-items: center;">
+                        <button class="slove-question">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512">
+                                <path d="M438.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L338.8 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l306.7 0L233.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160z"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="question-card">
+                <div class="question-details">
+                    <h2>1. Fibanocci Number</h2>
+                    <span>Easy</span>
+                </div>
+                <div class="question-status">
+                    <span class="score">Score : 100</span>
+                    <div class="question-details" style="align-items: center;">
+                        <button class="slove-question">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512">
+                                <path d="M438.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L338.8 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l306.7 0L233.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160z"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="question-card">
+                <div class="question-details">
+                    <h2>1. Fibanocci Number</h2>
+                    <span>Easy</span>
+                </div>
+                <div class="question-status">
+                    <span class="score">Score : 100</span>
+                    <div class="question-details" style="align-items: center;">
+                        <button class="slove-question">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512">
+                                <path d="M438.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L338.8 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l306.7 0L233.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160z"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="question-card">
+                <div class="question-details">
+                    <h2>1. Fibanocci Number</h2>
+                    <span>Easy</span>
+                </div>
+                <div class="question-status">
+                    <span class="score">Score : 100</span>
+                    <div class="question-details" style="align-items: center;">
+                        <button class="slove-question">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512">
+                                <path d="M438.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L338.8 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l306.7 0L233.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160z"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="main-body question-list" style="top: 60px; z-index: 8;">
+        <div class="mcq-body scrollhide">
+            <h2>Question No</h2>
+            <p>Question description</p>
+            <div class="mcq-options">
+                <div class="mcq-option" onclick='this.children[0].checked=true'>
+                    <input type="radio" name="mcq-option" value="1">
+                    <div class="circle">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512">
+                            <path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM369 209L241 337c-9.4 9.4-24.6 9.4-33.9 0l-64-64c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l47 47L335 175c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9z"/>
+                        </svg>
+                    </div>
+                    <span>Option Answer asdfghjklasdfghjklasdfghjklASDFGHJKL</span>
+                </div>
+                <div class="mcq-option" onclick='this.children[0].checked=true'>
+                    <input type="radio" name="mcq-option" value="2">
+                    <div class="circle">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512">
+                            <path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM369 209L241 337c-9.4 9.4-24.6 9.4-33.9 0l-64-64c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l47 47L335 175c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9z"/>
+                        </svg>
+                    </div>
+                    <span>Option Answer</span>
+                </div>
+                <div class="mcq-option" onclick='this.children[0].checked=true'>
+                    <input type="radio" name="mcq-option" value="3">
+                    <div class="circle">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512">
+                            <path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM369 209L241 337c-9.4 9.4-24.6 9.4-33.9 0l-64-64c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l47 47L335 175c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9z"/>
+                        </svg>
+                    </div>
+                    <span>Option Answer</span>
+                </div>
+                <div class="mcq-option" onclick='this.children[0].checked=true'>
+                    <input type="radio" name="mcq-option" value="4">
+                    <div class="circle">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512">
+                            <path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM369 209L241 337c-9.4 9.4-24.6 9.4-33.9 0l-64-64c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l47 47L335 175c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9z"/>
+                        </svg>
+                    </div>
+                    <span>Option Answer</span>
+                </div>
+            </div>
+        </div>      
+        <div class="mcq-navigation">
+            <button class="question-btn flex-display">
+                <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512">
+                    <path d="M512 256A256 256 0 1 0 0 256a256 256 0 1 0 512 0zM271 135c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9l-87 87 87 87c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0L167 273c-9.4-9.4-9.4-24.6 0-33.9L271 135z"/>
+                </svg>
+                &nbsp;Previous
+            </button>
+            <button class="question-btn" onclick="document.querySelector(`input[type='radio']:checked`).checked=false">Clear Output</button>
+            <button class="question-btn flex-display">
+                Next&nbsp;
+                <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512">
+                    <path d="M0 256a256 256 0 1 0 512 0A256 256 0 1 0 0 256zM241 377c-9.4 9.4-24.6 9.4-33.9 0s-9.4-24.6 0-33.9l87-87-87-87c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0L345 239c9.4 9.4 9.4 24.6 0 33.9L241 377z"/>
+                </svg>
+            </button>
+        </div>      
+    </div>
+</body>
+<script>
+
+    let questionListDiv = document.getElementById('question-list-div');
+
+    let questionList = document.getElementById('question-list');
+
+    questionList.addEventListener('click', questionToggle);
+
+    function questionToggle() {
+        questionList.classList.toggle('open-list');
+    }
+
+    function toggleQuestionDiv() {
+        questionListDiv.classList.toggle('open-list');
+    }
+
+    function updateOutput(data){
+        console.log("update output");
+    }
+
+    updateOutput();
+    
+    let timer = document.getElementById('timer');
+    let time = localStorage.getItem('time') ? localStorage.getItem('time') : 3600;
+    let interval = setInterval(() => {
+        time--;
+        localStorage.setItem('time', time);
+        let hr = Math.floor(time/3600);
+        let min = Math.floor((time%3600)/60);
+        let sec = time%60;
+        hr = hr < 10 ? `0${hr}` : hr;
+        min = min < 10 ? `0${min}` : min;
+        sec = sec < 10 ? `0${sec}` : sec;
+        timer.innerHTML = `${hr} : ${min} : ${sec}`;
+        if(time === 0){
+            clearInterval(interval);
+            alert("Time Up");
+        }
+    }, 1000);
+
+    clearInterval(interval);
+    
+    function decrementEndTime(){
+        let endtime = document.getElementById('redirect-time');
+        let time = parseInt(endtime.innerHTML);
+        time--;
+        endtime.innerHTML = time;
+    }
+
+    function requestFullScreen() {
+        let elem = document.documentElement;
+        if (elem.requestFullscreen) {
+            elem.requestFullscreen();
+        } else if (elem.webkitRequestFullscreen) { /* Safari */
+            elem.webkitRequestFullscreen();
+        } else if (elem.msRequestFullscreen) { /* IE11 */
+            elem.msRequestFullscreen();
+        }
+    }
+
+    requestFullScreen();
+
+    // setInterval(() => window.location.reload(), 3000);
+</script>
+</html>

@@ -1,0 +1,52 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Codespace</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="icon" type="image/x-icon" href="{% static 'images/acmcodespace_ele.png' %}">
+</head>
+<body>
+    <nav>
+        <div class="logo">
+            <img src="{% static 'images/ACM_Codespace_logo.png' %}" class="logo" alt="logo">
+        </div>
+        <ul class="nav-links">
+            <li><a href="/codespace">Home</a></li>
+            <li><a href="/codespace/practice">Practice</a></li>
+            <li><a href="/codespace/contests">Contests</a></li>
+        </ul>
+        {% if username %}
+            <div class="authorize">
+                {{ username }}
+                {% if profileUrl %}
+                <img src="../{{ profileUrl }}" class="profile-img" alt="profile-img">
+                {% else %}
+                <img src="{% static 'images/profile.jpeg' %}" class="profile-img" alt="profile">
+                {% endif %}
+                <ul>
+                    <li><a href="/codespace/profile/{{ username }}">Profile</a></li>
+                    <li><a href="/codespace/user_logout">Logout</a></li>
+                </ul>
+            </div>
+        {% else %}
+            <div class="authorize">
+                <a href="/codespace/user_login">Login</a>
+                <a href="/codespace/user_registration">Register</a>
+            </div>
+        {% endif %}
+    </nav>
+    <div class="main-body">
+        <div class="content flex-display scrollhide" style="justify-content: center; align-items: center;">
+            <h1>Thank you for participating</h1>
+            <span style="margin: 10px;">Happy coding</span>
+        </div>
+    </div>
+    <footer>
+        <p>&copy; copy rights reserved for <a href="https://gmritchapter.acm.org" class="link" target="_blank"><strong>ACM GMRIT</strong></a></p>
+        <p>Developed by <a href="https://bhargavratnala.github.io" class="link" target="_blank"><strong>Bhargav Ratnala</strong></a> & <a href="https://akramshaik22.github.io" class="link" target="_blank"><strong>Akram Shaik</strong></a> (2021-25)</p>
+    </footer>
+</body>
+</html>

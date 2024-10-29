@@ -1,0 +1,63 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Codewars</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="icon" type="image/x-icon" href="{% static 'images/acmcodespace_ele.png' %}">
+</head>
+<body>
+    <nav>
+        <div class="flex-display">
+            <div class="logo">
+                <img src="{% static 'images/ACM_Codespace_logo.png' %}" class="logo" alt="logo">
+            </div>
+            <span class="vertical-line"></span>
+            <button class="question-btn flex-display">
+                &nbsp;&nbsp;Code Duel
+            </button>
+        </div>
+        <div class="flex-display">
+            {% if username %}
+                <div class="authorize">
+                    <span class="username">{{username}}</span>
+                    {% if profileUrl %}
+                    <img src="/codespace{{ profileUrl }}" class="profile-img" alt="profile-img">
+                    {% else %}
+                    <img src="{% static 'images/profile.jpeg' %}" class="profile-img" alt="profile">
+                    {% endif %}
+                    <ul>
+                        <li><a href="#">Profile</a></li>
+                        <li><a href="user_logout">Logout</a></li>
+                    </ul>
+                </div>
+            {% else %}
+                <div class="authorize">
+                    <a href="user_login">Login</a>
+                    <a href="user_registration">Register</a>
+                </div>
+            {% endif %}
+        </div>
+    </nav>
+    <div class="main-body" style="flex-direction: column; justify-content: center;">
+        <h2 style="margin: 10px;">Code Duel</h2>
+        <p>May the best coder win</p>
+        <p>Sharpen your skills and code to victory</p>
+        <p>Put your coding prowess to the test in the ultimate battle of minds</p>
+        <p>Enter the arena and prove your coding dominance</p>
+        <div style="margin: 10px;">
+            {% if status %}
+                <a class="btn link" style="width: fit-content; padding: 10px;" href="code_duel">Start Battle</a>
+            {% else %}
+                <button class="btn" style="width: fit-content; padding: 10px;">Waiting for Host...</button>
+            {% endif %}
+        </div>
+    </div>
+    <footer>
+        <p>&copy; copy rights reserved for <a href="https://gmritchapter.acm.org" class="link" target="_blank"><strong>ACM GMRIT</strong></a></p>
+        <p>Developed by <a href="https://bhargavratnala.github.io" class="link" target="_blank"><strong>Bhargav Ratnala</strong></a> & <a href="https://akramshaik22.github.io" class="link" target="_blank"><strong>Akram Shaik</strong></a> (2021-25)</p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,78 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ contest_title }} Submissions</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="icon" type="image/x-icon" href="{% static 'images/acmcodespace_ele.png' %}">
+</head>
+<body>
+    <nav>
+        <div class="logo">
+            <img src="{% static 'images/ACM_Codespace_logo.png' %}" class="logo" alt="logo">
+        </div>
+        <div class="authorize">
+            <a href="/codespace/admin_logout" class="link" style="margin-right:20px;">Logout</a>
+        </div>
+    </nav>
+        
+    <div class="main-body" style="align-items: flex-start;">
+        <div class="about admin-about">
+            <div class="flex-display user-info">
+                <img src="{% static 'images/profile.jpeg' %}" alt="user profile pic" class="user-profile-pic">
+                <h2>{{ user.get_full_name }}</h2>
+                <span>{{ user.username }}</span>
+            </div>
+            <div class="flex-display other-info">
+                <h2>{{ contest_title }}</h2>
+                <span><a href="/codespace/admin_contests/{{ contest_type }}/{{ contest_code }}/" class="link">About</a></span>
+                <span><a href="/codespace/admin_contests/{{ contest_type }}/{{ contest_code }}/questions/" class="link">Questions</a></span>
+                <span><a href="/codespace/admin_contests/{{ contest_type }}/{{ contest_code }}/registrations/" class="link">Registrations</a></span>
+                <span><a href="/codespace/admin_contests/{{ contest_type }}/{{ contest_code }}/submissions/" class="link">Submissions</a></span>
+                <span><a href="/codespace/admin_contests/{{ contest_type }}/{{ contest_code }}/dashboard/" class="link">Dashboard</a></span>
+            </div>
+        </div>
+        <div class="contest-participated" style="margin-top: 20px; width: calc(100% - 300px);height:100%; overflow-y: scroll;">
+            <div style="display: flex; width: 100%; justify-content: space-between; padding: 10px;">
+                <a class="btn question-btn" onclick="toggleQuestionDiv()" href="/codespace/admin_contests/{{ contest_type }}/{{ contest_code }}/" style="text-decoration:none; color:black;">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512">
+                        <path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.2 288 416 288c17.7 0 32-14.3 32-32s-14.3-32-32-32l-306.7 0L214.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/>
+                    </svg>
+                    &nbsp;Back
+                </a>
+            </div>
+            <div style="width: 100%; height: calc(100% - 60px); overflow: scroll;" class="scrollhide">
+                <h2 style="margin: 10px 30px;">Submissions</h2>
+                <table style="max-width: 100%; overflow-x: scroll;" class="submissiontable">
+                    <tr>
+                        <th>Username</th>
+                        <th>Question Title</th>
+                        <th>Score</th>
+                        <!--<th>Time</th>-->
+                        <th style="width: 50px">Code</th>
+                    </tr>
+                    {% for i in submissions %}
+                        <tr>
+                            <td><a href="/codespace/profile/{{ i.username }}" target="_blank">{{ i.username }}</a></td>
+                            {% if i.que_title %}
+                            <td>{{ i.que_title }}</td>
+                            {% else %}
+                            <td><textarea style="text-align: start; margin: 10px; font-weight: 100; width: 250px; height: 150px; text-wrap: nowrap; background-color: inherit; padding: 5px;" disabled>{{ i.que_desc }}</textarea></td>
+                            {% endif %}
+                            <td>{{ i.score }}</td>
+                            <!--<td>{{ i.time }}</td>-->
+                            {% if i.que_title %}
+                            <td><textarea style="text-align: start; margin: 10px; font-weight: 100; width: 250px; height: 250px; text-wrap: nowrap; background-color: inherit; padding: 5px;" disabled>{{ i.code}}</textarea></td>
+                            {% else %}
+                            <td>{{ i.code }}</td>
+                            {% endif %}
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
